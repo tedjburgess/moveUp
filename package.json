@@ -1,0 +1,28 @@
+{
+  "name": "moveup",
+  "version": "1.0.0",
+  "description": "A fullstack Movement Reminder / Activity Streak web application.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,json,md,css}\"",
+    "test": "npm test --prefix backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tedjburgess/moveUp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tedjburgess/moveUp/issues"
+  },
+  "homepage": "https://github.com/tedjburgess/moveUp#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prettier": "^3.8.3"
+  }
+}
