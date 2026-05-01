@@ -29,3 +29,12 @@ backend/
     routes/       API route definitions
     models/       Mongoose schemas and models
     middleware/   Express middleware
+```
+
+## Development commands
+
+From the project root:
+
+```bash
+npm run dev
+```
