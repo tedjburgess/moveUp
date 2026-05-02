@@ -66,11 +66,9 @@ The user interacts with the frontend built in React. The frontend sends requests
 
 ## Frontend & Backend Setup Instructions
 
-
 The root script is configured using concurrently, you can run both frontend and backend with one command:
 
 npm run dev
-
 
 ## Environment Variables
 
