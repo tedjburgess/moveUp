@@ -7,11 +7,13 @@ Users can receive reminders to take short movement breaks, confirm completed bre
 ## Tech Stack
 
 ### Frontend
+
 - React
 - JavaScript
 - CSS
 
 ### Backend
+
 - Node.js
 - Express
 - MongoDB
@@ -35,7 +37,6 @@ backend/
     models/       Mongoose schemas and models
     middleware/   Express middleware
 ```
-
 
 ## Group Members
 
@@ -63,9 +64,7 @@ The current checkpoint focuses on setting up the project structure, creating the
 
 The user interacts with the frontend built in React. The frontend sends requests to the backend API using HTTP requests. The backend, built with Node.js and Express, handles the logic for users, reminders, points, streaks, and leaderboard data. The backend communicates with MongoDB through Mongoose to store and retrieve data.
 
-
 ## Frontend Setup Instructions
-
 
 ```bash
 1. Navigate to the frontend folder:
@@ -97,7 +96,7 @@ npm install
 
 3. Create a `.env` file inside the `backend` folder and add the following:
 
-PORT=5000  
+PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 
 4. Start the backend server:
@@ -129,3 +128,4 @@ Example:
 ```env
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
+```
