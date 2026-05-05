@@ -14,12 +14,26 @@ function App() {
 
         <nav>
           <ul>
-            <li><button onClick={() => setCurrentPage("home")}>Home</button></li>
-            <li><button>Leaderboard</button></li>
-            <li><button>Account</button></li>
-            <li><button onClick={() => setCurrentPage("signup")}>Sign Up</button></li>
-            <li><button onClick={() => setCurrentPage("about")}>About</button></li>
-            <li><button onClick={() => setCurrentPage("reminder")}>Reminder</button></li>
+            <li>
+              <button onClick={() => setCurrentPage("home")}>Home</button>
+            </li>
+            <li>
+              <button>Leaderboard</button>
+            </li>
+            <li>
+              <button>Account</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("about")}>About</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("reminder")}>
+                Reminder
+              </button>
+            </li>
           </ul>
         </nav>
       </header>

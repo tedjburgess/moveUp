@@ -4,9 +4,11 @@ function SignUp() {
       <h2>Sign Up</h2>
 
       <input type="text" placeholder="Username" />
-      <br /><br />
+      <br />
+      <br />
       <input type="password" placeholder="Password" />
-      <br /><br />
+      <br />
+      <br />
 
       <button>Create Account</button>
     </section>
