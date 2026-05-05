@@ -34,3 +34,7 @@ const movementLogSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+const MovementLog = mongoose.model("MovementLog", movementLogSchema);
+
+module.exports = MovementLog;
