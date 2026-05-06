@@ -4,14 +4,13 @@ function Reminder() {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
-<<<<<<< HEAD
+
   const [movementLogs, setMovementLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState("");
-=======
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
->>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
 
   const maxSeconds = 10 * 60;
 
@@ -102,10 +101,9 @@ function Reminder() {
   const stopStopwatch = () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
-<<<<<<< HEAD
+
     saveMovementResponse(elapsedSeconds, "yes");
     fetchMovementLogs();
->>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
   };
 
   const formatTime = (seconds) => {
@@ -143,7 +141,6 @@ function Reminder() {
         <p>Final duration: {formatTime(finalDuration)}</p>
       )}
 
-<<<<<<< HEAD
       <hr />
 
       <h3>Recent Movement Logs</h3>
@@ -170,11 +167,10 @@ function Reminder() {
             ))}
         </ul>
       )}
-=======
+
       {message && <p>{message}</p>}
 
       {error && <p>{error}</p>}
->>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
     </section>
   );
 }
