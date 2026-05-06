@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const movementLogSchema = new mongoose.Schema(
   {
     userId: {
@@ -5,6 +7,13 @@ const movementLogSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
+    responseType: {
+      type: String,
+      enum: ["yes", "no", "timeout"],
+      required: true,
+    },
+
     moved: {
       type: Boolean,
       required: true,
@@ -17,7 +26,7 @@ const movementLogSchema = new mongoose.Schema(
       min: 0,
     },
 
-    cappedDurationSeconds: {
+    creditedSeconds: {
       type: Number,
       required: true,
       default: 0,
@@ -31,10 +40,20 @@ const movementLogSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+
+    sessionStreakAtTime: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    multiplierAtTime: {
+      type: Number,
+      default: 1,
+      min: 1,
+    },
   },
   { timestamps: true }
 );
 
-const MovementLog = mongoose.model("MovementLog", movementLogSchema);
-
-module.exports = MovementLog;
+module.exports = mongoose.model("MovementLog", movementLogSchema);
