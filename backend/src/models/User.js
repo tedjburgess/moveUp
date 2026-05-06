@@ -8,12 +8,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
     },
-    id: {
-      type: Number,
-      required: true,
-      trim: true,
-      unique: true,
-    },
     email: {
       type: String,
       required: true,
@@ -21,19 +15,21 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
     },
-    password: {
+    passwordHash: {
       type: String,
       required: true,
     },
-    points: {
+    totalPoints: {
       type: Number,
       default: 0,
     },
-    rank: {
+    currentStreak: {
       type: Number,
-      required: true,
-      trim: true,
-      unique: true,
+      default: 0,
+    },
+    bestStreak: {
+      type: Number,
+      default: 0,
     },
   },
   {
