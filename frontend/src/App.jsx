@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
+import Reminder from "./pages/Reminder.jsx";
+import SignUp from "./pages/SignUp.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -8,17 +10,39 @@ function App() {
   return (
     <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
       <header>
-        <h1>Movement Reminder</h1>
+        <h1>MoveUp</h1>
 
         <nav>
-          <button onClick={() => setCurrentPage("home")}>Home</button>
-          <button onClick={() => setCurrentPage("about")}>About</button>
+          <ul>
+            <li>
+              <button onClick={() => setCurrentPage("home")}>Home</button>
+            </li>
+            <li>
+              <button>Leaderboard</button>
+            </li>
+            <li>
+              <button>Account</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("about")}>About</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("reminder")}>
+                Reminder
+              </button>
+            </li>
+          </ul>
         </nav>
       </header>
 
       <main>
-        {currentPage === "home" && <Home />}
+        {currentPage === "home" && <Home setCurrentPage={setCurrentPage} />}
         {currentPage === "about" && <About />}
+        {currentPage === "reminder" && <Reminder />}
+        {currentPage === "signup" && <SignUp />}
       </main>
     </div>
   );
