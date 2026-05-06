@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
@@ -53,8 +53,8 @@ const userSchema = new mongoose.Schema(
 
     reminderMode: {
       type: String,
-      enum: ['science', 'custom'],
-      default: 'science',
+      enum: ["science", "custom"],
+      default: "science",
     },
 
     customReminderMinutes: {
@@ -73,7 +73,7 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);
