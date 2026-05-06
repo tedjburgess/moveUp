@@ -4,8 +4,35 @@ function Reminder() {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
+  const [movementLogs, setMovementLogs] = useState([]);
+  const [logsLoading, setLogsLoading] = useState(true);
+  const [logsError, setLogsError] = useState("");
 
   const maxSeconds = 10 * 60;
+
+  const fetchMovementLogs = async () => {
+    try {
+      setLogsLoading(true);
+      setLogsError("");
+
+      const response = await fetch("http://localhost:5000/api/movement-log");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch movement logs");
+      }
+
+      const data = await response.json();
+      setMovementLogs(data);
+    } catch (error) {
+      setLogsError(error.message);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovementLogs();
+  }, []);
 
   useEffect(() => {
     if (!isMoving) {
@@ -36,6 +63,7 @@ function Reminder() {
   const stopStopwatch = () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
+    fetchMovementLogs();
   };
 
   const formatTime = (seconds) => {
@@ -64,6 +92,33 @@ function Reminder() {
 
       {finalDuration !== null && (
         <p>Final duration: {formatTime(finalDuration)}</p>
+      )}
+
+      <hr />
+
+      <h3>Recent Movement Logs</h3>
+      <button onClick={fetchMovementLogs}>Refresh logs</button>
+
+      {logsLoading && <p>Loading movement logs...</p>}
+
+      {logsError && <p>{logsError}</p>}
+
+      {!logsLoading && !logsError && movementLogs.length === 0 && (
+        <p>No movement logs found.</p>
+      )}
+
+      {!logsLoading && !logsError && movementLogs.length > 0 && (
+        <ul>
+          {movementLogs
+            .filter((log) => log.moved)
+            .map((log) => (
+              <li key={log._id}>
+                <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
+                <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
+                <strong>Points:</strong> {log.pointsEarned}
+              </li>
+            ))}
+        </ul>
       )}
     </section>
   );
