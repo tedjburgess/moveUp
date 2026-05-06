@@ -47,13 +47,13 @@ backend/
 
 ## Current Checkpoint
 
-The current checkpoint focuses on setting up the project structure, creating the frontend and backend folders, connecting the basic app setup, and writing documentation that explains how to run the project.
+The current checkpoint focuses on building the frontend reminder flow, connecting the frontend to the backend API, saving movement responses to MongoDB, and documenting how to run the project locally.
 
 ## Planned Core Features
 
 - User registration and login
-- Movement break reminders
-- Break confirmation
+- Movement break reminders with stopwatch tracking
+- Break confirmation with Yes/No response flow
 - Points system
 - Activity streaks
 - User statistics
@@ -64,11 +64,38 @@ The current checkpoint focuses on setting up the project structure, creating the
 
 The user interacts with the frontend built in React. The frontend sends requests to the backend API using HTTP requests. The backend, built with Node.js and Express, handles the logic for users, reminders, points, streaks, and leaderboard data. The backend communicates with MongoDB through Mongoose to store and retrieve data.
 
+## Movement Reminder Flow
+
+The Reminder page simulates a movement break prompt.
+
+- Clicking **Yes** starts a stopwatch.
+- Clicking **I'm back** stops the stopwatch and saves the movement duration.
+- Clicking **No** saves a movement response with 0 seconds.
+- Movement duration is capped at 10 minutes.
+- Responses are sent to the backend API and stored in MongoDB.
+
 ## Frontend & Backend Setup Instructions
 
-The root script is configured using concurrently, you can run both frontend and backend with one command:
+The root script is configured using concurrently, allowing both frontend and backend to run together.
 
+Run the application from the root folder:
+
+```bash
+npm install
 npm run dev
+```
+
+Frontend:
+
+```text
+http://localhost:5173
+```
+
+Backend:
+
+```text
+http://localhost:5000
+```
 
 ## Environment Variables
 
