@@ -4,9 +4,14 @@ function Reminder() {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
+<<<<<<< HEAD
   const [movementLogs, setMovementLogs] = useState([]);
   const [logsLoading, setLogsLoading] = useState(true);
   const [logsError, setLogsError] = useState("");
+=======
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+>>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
 
   const maxSeconds = 10 * 60;
 
@@ -54,16 +59,53 @@ function Reminder() {
     return () => clearInterval(timer);
   }, [isMoving]);
 
+  const saveMovementResponse = async (durationSeconds, responseType) => {
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await fetch("http://localhost:5000/api/movement-log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          durationSeconds,
+          responseType,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save movement response");
+      }
+
+      setMessage("Movement response saved.");
+    } catch (err) {
+      setError("Could not save movement response.");
+    }
+  };
+
   const startStopwatch = () => {
     setElapsedSeconds(0);
     setFinalDuration(null);
+    setMessage("");
+    setError("");
     setIsMoving(true);
+  };
+
+  const handleNo = () => {
+    setFinalDuration(0);
+
+    saveMovementResponse(0, "no");
   };
 
   const stopStopwatch = () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
+<<<<<<< HEAD
+    saveMovementResponse(elapsedSeconds, "yes");
     fetchMovementLogs();
+>>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
   };
 
   const formatTime = (seconds) => {
@@ -76,24 +118,32 @@ function Reminder() {
   return (
     <section>
       <h2>It's time to move!</h2>
+
       <p>Take a short break and move your body.</p>
 
-      {!isMoving && <button onClick={startStopwatch}>Yes</button>}
-      {!isMoving && <button>No</button>}
+      {!isMoving && (
+        <>
+          <button onClick={startStopwatch}>Yes</button>
+
+          <button onClick={handleNo}>No</button>
+        </>
+      )}
 
       {isMoving && (
         <>
           <p>Time Elapsed: {formatTime(elapsedSeconds)}</p>
+
           <button onClick={stopStopwatch}>I'm back</button>
         </>
       )}
 
-      {elapsedSeconds >= maxSeconds && <p>10 minute break is over!</p>}
+      {elapsedSeconds >= maxSeconds && <p>10 minute break is finished!</p>}
 
       {finalDuration !== null && (
         <p>Final duration: {formatTime(finalDuration)}</p>
       )}
 
+<<<<<<< HEAD
       <hr />
 
       <h3>Recent Movement Logs</h3>
@@ -120,6 +170,11 @@ function Reminder() {
             ))}
         </ul>
       )}
+=======
+      {message && <p>{message}</p>}
+
+      {error && <p>{error}</p>}
+>>>>>>> 3e3306c492600b1d1f3c252f5da9af0e6b035046
     </section>
   );
 }
