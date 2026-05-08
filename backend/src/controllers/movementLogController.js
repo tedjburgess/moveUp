@@ -1,6 +1,52 @@
-//Returns all movement logs with highest points at front of array
-
 const MovementLog = require("../models/MovementLog");
+
+const calculateMovementLogValues = (moved, durationSeconds) => {
+  if (!moved) {
+    return {
+      moved: false,
+      durationSeconds: 0,
+      creditedSeconds: 0,
+      pointsEarned: 0,
+    };
+  }
+
+  const safeDuration = Math.max(0, Number(durationSeconds) || 0);
+  const creditedSeconds = Math.min(safeDuration, 600);
+  const pointsEarned = Math.floor(creditedSeconds / 60);
+
+  return {
+    moved: true,
+    durationSeconds: safeDuration,
+    creditedSeconds,
+    pointsEarned,
+  };
+};
+
+const createMovementLog = async (req, res) => {
+  try {
+    const { userId, moved, durationSeconds } = req.body;
+
+    if (!userId || typeof moved !== "boolean") {
+      return res.status(400).json({
+        error: "userId and moved are required",
+      });
+    }
+
+    const movementValues = calculateMovementLogValues(moved, durationSeconds);
+
+    const movementLog = await MovementLog.create({
+      userId,
+      responseType: moved ? "yes" : "no",
+      ...movementValues,
+    });
+
+    return res.status(201).json(movementLog);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to create movement log",
+    });
+  }
+};
 
 const getMovementLogsByUser = async (req, res) => {
   try {
@@ -10,40 +56,16 @@ const getMovementLogsByUser = async (req, res) => {
       createdAt: -1,
     });
 
-    res.status(200).json(movementLogs);
+    return res.status(200).json(movementLogs);
   } catch (error) {
-    return res.status(500).json({ error: "Failed to fetch movement logs" });
-  }
-};
-
-const createMovementLog = async (req, res) => {
-  try {
-    const { durationSeconds, responseType } = req.body;
-
-    const creditedSeconds = Math.min(durationSeconds, 600);
-
-    const newLog = await MovementLog.create({
-      userId: "507f1f77bcf86cd799439011",
-      responseType,
-      moved: durationSeconds > 0,
-      durationSeconds,
-      creditedSeconds,
-      pointsEarned: creditedSeconds,
-      sessionStreakAtTime: 1,
-      multiplierAtTime: 1,
-    });
-
-    res.status(201).json(newLog);
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      error: "Failed to create movement log",
+    return res.status(500).json({
+      error: "Failed to fetch movement logs",
     });
   }
 };
 
 module.exports = {
-  getMovementLogsByUser,
   createMovementLog,
+  getMovementLogsByUser,
+  calculateMovementLogValues,
 };
