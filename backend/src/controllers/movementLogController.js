@@ -2,16 +2,17 @@
 
 const MovementLog = require("../models/MovementLog");
 
-const getMovement = async (req, res) => {
+const getMovementLogsByUser = async (req, res) => {
   try {
-    const movementLogs = await MovementLog.find().sort({
-      pointsEarned: -1,
+    const { userId } = req.params;
+
+    const movementLogs = await MovementLog.find({ userId }).sort({
       createdAt: -1,
     });
 
     res.status(200).json(movementLogs);
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Failed to fetch movement logs" });
   }
 };
 
@@ -43,6 +44,6 @@ const createMovementLog = async (req, res) => {
 };
 
 module.exports = {
-  getMovement,
+  getMovementLogsByUser,
   createMovementLog,
 };
