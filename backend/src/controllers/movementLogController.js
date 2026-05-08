@@ -38,6 +38,12 @@ const createMovementLog = async (req, res) => {
       userId,
       responseType: moved ? "yes" : "no",
       ...movementValues,
+const getMovementLogsByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const movementLogs = await MovementLog.find({ userId }).sort({
+      createdAt: -1,
     });
 
     return res.status(201).json(movementLog);
@@ -45,6 +51,7 @@ const createMovementLog = async (req, res) => {
     return res.status(500).json({
       error: "Failed to create movement log",
     });
+    return res.status(500).json({ error: "Failed to fetch movement logs" });
   }
 };
 
@@ -63,6 +70,6 @@ const getMovement = async (req, res) => {
 
 module.exports = {
   createMovementLog,
-  getMovement,
+  getMovementLogByUser,
   calculateMovementLogValues,
 };
