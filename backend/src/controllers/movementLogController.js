@@ -38,6 +38,16 @@ const createMovementLog = async (req, res) => {
       userId,
       responseType: moved ? "yes" : "no",
       ...movementValues,
+    });
+
+    return res.status(201).json(movementLog);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to create movement log",
+    });
+  }
+};
+
 const getMovementLogsByUser = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -46,30 +56,16 @@ const getMovementLogsByUser = async (req, res) => {
       createdAt: -1,
     });
 
-    return res.status(201).json(movementLog);
+    return res.status(200).json(movementLogs);
   } catch (error) {
     return res.status(500).json({
-      error: "Failed to create movement log",
+      error: "Failed to fetch movement logs",
     });
-    return res.status(500).json({ error: "Failed to fetch movement logs" });
-  }
-};
-
-const getMovement = async (req, res) => {
-  try {
-    const movementLogs = await MovementLog.find().sort({
-      pointsEarned: -1,
-      createdAt: -1,
-    });
-
-    res.status(200).json(movementLogs);
-  } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
 module.exports = {
   createMovementLog,
-  getMovementLogByUser,
+  getMovementLogsByUser,
   calculateMovementLogValues,
 };
