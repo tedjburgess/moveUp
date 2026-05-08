@@ -12,7 +12,7 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
 
   const safeDuration = Math.max(0, Number(durationSeconds) || 0);
   const creditedSeconds = Math.min(safeDuration, 600);
-  const pointsEarned = Math.floor(creditedSeconds / 60) * 10;
+  const pointsEarned = Math.floor(creditedSeconds / 60);
 
   return {
     moved: true,
@@ -22,7 +22,7 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
   };
 };
 
-const createMovement = async (req, res) => {
+const createMovementLog = async (req, res) => {
   try {
     const { userId, moved, durationSeconds } = req.body;
 
@@ -62,7 +62,7 @@ const getMovement = async (req, res) => {
 };
 
 module.exports = {
-  createMovement,
+  createMovementLog,
   getMovement,
   calculateMovementLogValues,
 };
