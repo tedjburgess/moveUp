@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import Reminder from "./Reminder.jsx";
 
 const reminderIntervalSeconds = 10;
 
 function Dashboard() {
   const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isTimerRunning || secondsLeft <= 0) {
@@ -15,6 +17,7 @@ function Dashboard() {
       setSecondsLeft((currentSeconds) => {
         if (currentSeconds <= 1) {
           setIsTimerRunning(false);
+          setIsReminderModalOpen(true);
           return 0;
         }
 
@@ -27,7 +30,12 @@ function Dashboard() {
 
   const startTimer = () => {
     setSecondsLeft(reminderIntervalSeconds);
+    setIsReminderModalOpen(false);
     setIsTimerRunning(true);
+  };
+
+  const closeReminderModal = () => {
+    setIsReminderModalOpen(false);
   };
 
   const formatTime = (seconds) => {
@@ -43,7 +51,6 @@ function Dashboard() {
 
       <div>
         <h3>Movement Timer</h3>
-
         <p>Next reminder in: {formatTime(secondsLeft)}</p>
 
         {!isTimerRunning && secondsLeft > 0 && (
@@ -53,12 +60,9 @@ function Dashboard() {
         )}
 
         {secondsLeft === 0 && (
-          <>
-            <p>It is time to move!</p>
-            <button type="button" onClick={startTimer}>
-              Start Again
-            </button>
-          </>
+          <button type="button" onClick={startTimer}>
+            Start Again
+          </button>
         )}
       </div>
 
@@ -73,6 +77,31 @@ function Dashboard() {
         <h3>Recent Activity</h3>
         <p>No recent activity yet.</p>
       </div>
+
+      {isReminderModalOpen && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "24px",
+              borderRadius: "8px",
+              minWidth: "300px",
+              textAlign: "center",
+            }}
+          >
+            <Reminder onClose={closeReminderModal} />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
