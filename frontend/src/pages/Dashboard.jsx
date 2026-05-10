@@ -12,6 +12,7 @@ function Dashboard() {
         <h3>Score / Streak</h3>
         <p>Points: 0</p>
         <p>Current streak: 0</p>
+        <p>Best sessions streak: 0</p>
       </div>
 
       <div>
