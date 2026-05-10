@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
-function Dashboard() {
-  const reminderIntervalSeconds = 10;
+const reminderIntervalSeconds = 10;
 
+function Dashboard() {
   const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
 
@@ -12,7 +12,14 @@ function Dashboard() {
     }
 
     const timer = setInterval(() => {
-      setSecondsLeft((currentSeconds) => currentSeconds - 1);
+      setSecondsLeft((currentSeconds) => {
+        if (currentSeconds <= 1) {
+          setIsTimerRunning(false);
+          return 0;
+        }
+
+        return currentSeconds - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timer);
@@ -40,13 +47,17 @@ function Dashboard() {
         <p>Next reminder in: {formatTime(secondsLeft)}</p>
 
         {!isTimerRunning && secondsLeft > 0 && (
-          <button onClick={startTimer}>Start Reminder</button>
+          <button type="button" onClick={startTimer}>
+            Start Reminder
+          </button>
         )}
 
         {secondsLeft === 0 && (
           <>
             <p>It is time to move!</p>
-            <button onClick={startTimer}>Start Again</button>
+            <button type="button" onClick={startTimer}>
+              Start Again
+            </button>
           </>
         )}
       </div>
