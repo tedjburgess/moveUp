@@ -14,12 +14,16 @@ function Reminder({ onClose }) {
 
   const maxSeconds = 10 * 60;
 
+  const testUserId = "69fb1de6036910ecb5c5f8a9";
+
   const fetchMovementLogs = async () => {
     try {
       setLogsLoading(true);
       setLogsError("");
 
-      const response = await fetch("http://localhost:5000/api/movement-log");
+      const response = await fetch(
+        `http://localhost:5000/api/movement-logs/user/${testUserId}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch movement logs");
@@ -63,14 +67,15 @@ function Reminder({ onClose }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/movement-log", {
+      const response = await fetch("http://localhost:5000/api/movement-logs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId: testUserId,
+          moved: responseType === "yes",
           durationSeconds,
-          responseType,
         }),
       });
 
@@ -78,9 +83,13 @@ function Reminder({ onClose }) {
         throw new Error("Failed to save movement response");
       }
 
+      const data = await response.json();
+
       setMessage("Movement response saved.");
+      return data;
     } catch (err) {
       setError("Could not save movement response.");
+      return null;
     }
   };
 
@@ -92,17 +101,18 @@ function Reminder({ onClose }) {
     setIsMoving(true);
   };
 
-  const handleNo = () => {
+  const handleNo = async () => {
     setFinalDuration(0);
 
-    saveMovementResponse(0, "no");
+    await saveMovementResponse(0, "no");
+    fetchMovementLogs();
   };
 
-  const stopStopwatch = () => {
+  const stopStopwatch = async () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
 
-    saveMovementResponse(elapsedSeconds, "yes");
+    await saveMovementResponse(elapsedSeconds, "yes");
     fetchMovementLogs();
   };
 
