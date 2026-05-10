@@ -68,7 +68,7 @@ const createMovementLog = async (req, res) => {
         totalPoints: user.totalPoints,
         currentSessionStreak: user.currentSessionStreak,
         bestSessionStreak: user.bestSessionStreak,
-      }
+      },
     });
   } catch (error) {
     return res.status(500).json({
