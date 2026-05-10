@@ -1,18 +1,72 @@
+import { useEffect, useState } from "react";
+
+const reminderIntervalSeconds = 10;
+
 function Dashboard() {
+  const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+
+  useEffect(() => {
+    if (!isTimerRunning || secondsLeft <= 0) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setSecondsLeft((currentSeconds) => {
+        if (currentSeconds <= 1) {
+          setIsTimerRunning(false);
+          return 0;
+        }
+
+        return currentSeconds - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isTimerRunning, secondsLeft]);
+
+  const startTimer = () => {
+    setSecondsLeft(reminderIntervalSeconds);
+    setIsTimerRunning(true);
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
+
   return (
     <section>
       <h2>Dashboard</h2>
 
       <div>
         <h3>Movement Timer</h3>
-        <p>Timer placeholder</p>
+
+        <p>Next reminder in: {formatTime(secondsLeft)}</p>
+
+        {!isTimerRunning && secondsLeft > 0 && (
+          <button type="button" onClick={startTimer}>
+            Start Reminder
+          </button>
+        )}
+
+        {secondsLeft === 0 && (
+          <>
+            <p>It is time to move!</p>
+            <button type="button" onClick={startTimer}>
+              Start Again
+            </button>
+          </>
+        )}
       </div>
 
       <div>
         <h3>Score / Streak</h3>
         <p>Points: 0</p>
         <p>Current streak: 0</p>
-        <p>Best sessions streak: 0</p>
+        <p>Best session streak: 0</p>
       </div>
 
       <div>
