@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/health", healthRoutes);
-app.use("/api/movement-log", movementLogRoutes);
+app.use("/api/movement-logs", movementLogRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "moveUp backend is running" });
