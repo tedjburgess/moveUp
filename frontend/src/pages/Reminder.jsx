@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Reminder() {
+function Reminder({ onClose }) {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
@@ -114,7 +114,21 @@ function Reminder() {
   };
 
   return (
-    <section>
+    <section style={{ position: "relative" }}>
+      {onClose && (
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+          }}
+        >
+          X
+        </button>
+      )}
+
       <h2>It's time to move!</h2>
 
       <p>Take a short break and move your body.</p>

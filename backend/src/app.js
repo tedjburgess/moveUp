@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/health", healthRoutes);
-app.use("/api/movement-log", movementLogRoutes);
+app.use("/api/movement-logs", movementLogRoutes);
 app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
