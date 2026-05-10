@@ -3,7 +3,7 @@ const router = express.Router();
 
 const {
   getMovementLogsByUser,
-  createMovementLog
+  createMovementLog,
 } = require("../controllers/movementLogController");
 
 router.get("/user/:userId", getMovementLogsByUser);
