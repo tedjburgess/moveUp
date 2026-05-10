@@ -49,7 +49,7 @@ const createMovementLog = async (req, res) => {
         user.bestSessionStreak = user.currentSessionStreak;
       }
     } else {
-        user.currentSessionStreak = 0;
+      user.currentSessionStreak = 0;
     }
 
     const movementLog = await MovementLog.create({
