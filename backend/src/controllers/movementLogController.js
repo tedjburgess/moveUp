@@ -28,8 +28,7 @@ const createMovementLog = async (req, res) => {
     const { userId, moved, durationSeconds, responseType } = req.body;
 
     const finalUserId = req.user?.id || userId;
-    const finalResponseType =
-      responseType || (moved === true ? "yes" : "no");
+    const finalResponseType = responseType || (moved === true ? "yes" : "no");
 
     if (!finalUserId || !["yes", "no", "timeout"].includes(finalResponseType)) {
       return res.status(400).json({
@@ -47,7 +46,7 @@ const createMovementLog = async (req, res) => {
 
     const movementValues = calculateMovementLogValues(
       finalResponseType,
-      durationSeconds,
+      durationSeconds
     );
 
     user.totalPoints += movementValues.pointsEarned;
