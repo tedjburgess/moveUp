@@ -92,10 +92,15 @@ function Reminder({ onClose }) {
     setIsMoving(true);
   };
 
-  const handleNo = () => {
+  const handleNo = async () => {
     setFinalDuration(0);
 
-    saveMovementResponse(0, "no");
+    await saveMovementResponse(0, "no");
+    await fetchMovementLogs();
+
+    if (onClose) {
+      onClose();
+    }
   };
 
   const stopStopwatch = () => {
