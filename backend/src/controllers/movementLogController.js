@@ -1,8 +1,8 @@
 const MovementLog = require("../models/MovementLog");
 const User = require("../models/User");
 
-const calculateMovementLogValues = (responseType, moved, durationSeconds) => {
-  if (responseType === "timeout" || !moved) {
+const calculateMovementLogValues = (responseType, durationSeconds) => {
+  if (responseType === "no" || responseType === "timeout") {
     return {
       moved: false,
       durationSeconds: 0,
@@ -27,20 +27,15 @@ const createMovementLog = async (req, res) => {
   try {
     const { userId, moved, durationSeconds, responseType } = req.body;
 
-    const finalResponseType = responseType || (moved ? "yes" : "no");
     const finalUserId = req.user?.id || userId;
+    const finalResponseType =
+      responseType || (moved === true ? "yes" : "no");
 
     if (!finalUserId || !["yes", "no", "timeout"].includes(finalResponseType)) {
       return res.status(400).json({
         error: "userId and valid responseType are required",
       });
     }
-
-    const movementValues = calculateMovementLogValues(
-      finalResponseType,
-      moved,
-      durationSeconds
-    );
 
     const user = await User.findById(finalUserId);
 
@@ -49,6 +44,11 @@ const createMovementLog = async (req, res) => {
         error: "User not found",
       });
     }
+
+    const movementValues = calculateMovementLogValues(
+      finalResponseType,
+      durationSeconds,
+    );
 
     user.totalPoints += movementValues.pointsEarned;
 
