@@ -12,7 +12,7 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
 
   const safeDuration = Math.max(0, Number(durationSeconds) || 0);
   const creditedSeconds = Math.min(safeDuration, 600);
-  const pointsEarned = Math.floor(creditedSeconds / 60) * 10;
+  const pointsEarned = Math.floor(creditedSeconds / 60);
 
   return {
     moved: true,
@@ -22,7 +22,7 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
   };
 };
 
-const createMovement = async (req, res) => {
+const createMovementLog = async (req, res) => {
   try {
     const { userId, moved, durationSeconds } = req.body;
 
@@ -48,21 +48,24 @@ const createMovement = async (req, res) => {
   }
 };
 
-const getMovement = async (req, res) => {
+const getMovementLogsByUser = async (req, res) => {
   try {
-    const movementLogs = await MovementLog.find().sort({
-      pointsEarned: -1,
+    const { userId } = req.params;
+
+    const movementLogs = await MovementLog.find({ userId }).sort({
       createdAt: -1,
     });
 
-    res.status(200).json(movementLogs);
+    return res.status(200).json(movementLogs);
   } catch (error) {
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({
+      error: "Failed to fetch movement logs",
+    });
   }
 };
 
 module.exports = {
-  createMovement,
-  getMovement,
+  createMovementLog,
+  getMovementLogsByUser,
   calculateMovementLogValues,
 };

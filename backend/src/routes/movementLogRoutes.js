@@ -2,11 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  createMovement,
-  getMovement,
+  createMovementLog,
 } = require("../controllers/movementLogController");
 
-router.post("/", createMovement);
-router.get("/", getMovement);
+router.post("/", createMovementLog);
 
 module.exports = router;
