@@ -48,6 +48,8 @@ const createMovementLog = async (req, res) => {
       if (user.currentSessionStreak > user.bestSessionStreak) {
         user.bestSessionStreak = user.currentSessionStreak;
       }
+    } else {
+      user.currentSessionStreak = 0;
     }
 
     const movementLog = await MovementLog.create({
