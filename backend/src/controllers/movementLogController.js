@@ -1,7 +1,8 @@
 const MovementLog = require("../models/MovementLog");
+const User = require("../models/User");
 
-const calculateMovementLogValues = (moved, durationSeconds) => {
-  if (!moved) {
+const calculateMovementLogValues = (responseType, moved, durationSeconds) => {
+  if (responseType === "timeout" || !moved) {
     return {
       moved: false,
       durationSeconds: 0,
@@ -24,20 +25,51 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
 
 const createMovementLog = async (req, res) => {
   try {
-    const { userId, moved, durationSeconds } = req.body;
+    const { userId, moved, durationSeconds, responseType } = req.body;
 
-    if (!userId || typeof moved !== "boolean") {
+    const finalResponseType = responseType || (moved ? "yes" : "no");
+    const finalUserId = req.user?.id || userId;
+
+    if (!finalUserId || !["yes", "no", "timeout"].includes(finalResponseType)) {
       return res.status(400).json({
-        error: "userId and moved are required",
+        error: "userId and valid responseType are required",
       });
     }
 
-    const movementValues = calculateMovementLogValues(moved, durationSeconds);
+    const movementValues = calculateMovementLogValues(
+      finalResponseType,
+      moved,
+      durationSeconds
+    );
+
+    const user = await User.findById(finalUserId);
+
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    user.totalPoints += movementValues.pointsEarned;
+
+    if (movementValues.moved) {
+      user.currentSessionStreak += 1;
+
+      if (user.currentSessionStreak > user.bestSessionStreak) {
+        user.bestSessionStreak = user.currentSessionStreak;
+      }
+    } else {
+      user.currentSessionStreak = 0;
+    }
+
+    await user.save();
 
     const movementLog = await MovementLog.create({
-      userId,
-      responseType: moved ? "yes" : "no",
+      userId: finalUserId,
+      responseType: finalResponseType,
       ...movementValues,
+      sessionStreakAtTime: user.currentSessionStreak,
+      multiplierAtTime: 1,
     });
 
     return res.status(201).json(movementLog);
@@ -50,9 +82,9 @@ const createMovementLog = async (req, res) => {
 
 const getMovementLogsByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const finalUserId = req.user?.id || req.params.userId;
 
-    const movementLogs = await MovementLog.find({ userId }).sort({
+    const movementLogs = await MovementLog.find({ userId: finalUserId }).sort({
       createdAt: -1,
     });
 
