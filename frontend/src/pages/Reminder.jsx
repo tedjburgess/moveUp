@@ -14,12 +14,16 @@ function Reminder({ onClose }) {
 
   const maxSeconds = 10 * 60;
 
+  const userId = "69fbb7a5931013d605271be7";
+
   const fetchMovementLogs = async () => {
     try {
       setLogsLoading(true);
       setLogsError("");
 
-      const response = await fetch("http://localhost:5000/api/movement-log");
+      const response = await fetch(
+        `http://localhost:5000/api/movement-logs/user/${userId}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch movement logs");
@@ -63,14 +67,15 @@ function Reminder({ onClose }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/movement-log", {
+      const response = await fetch("http://localhost:5000/api/movement-logs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId,
+          moved: responseType === "yes",
           durationSeconds,
-          responseType,
         }),
       });
 
@@ -175,15 +180,13 @@ function Reminder({ onClose }) {
 
       {!logsLoading && !logsError && movementLogs.length > 0 && (
         <ul>
-          {movementLogs
-            .filter((log) => log.moved)
-            .map((log) => (
-              <li key={log._id}>
-                <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
-                <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
-                <strong>Points:</strong> {log.pointsEarned}
-              </li>
-            ))}
+          {movementLogs.map((log) => (
+            <li key={log._id}>
+              <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
+              <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
+              <strong>Points:</strong> {log.pointsEarned}
+            </li>
+          ))}
         </ul>
       )}
 
