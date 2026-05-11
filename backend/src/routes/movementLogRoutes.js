@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getMovementLogsByUser,
   createMovementLog,
+  getMovementLogsByUser,
 } = require("../controllers/movementLogController");
 
 router.get("/user/:userId", getMovementLogsByUser);
