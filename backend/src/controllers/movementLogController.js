@@ -1,5 +1,4 @@
 const MovementLog = require("../models/MovementLog");
-const User = require("../models/User");
 
 const calculateMovementLogValues = (moved, durationSeconds) => {
   if (!moved) {
@@ -33,45 +32,15 @@ const createMovementLog = async (req, res) => {
       });
     }
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
     const movementValues = calculateMovementLogValues(moved, durationSeconds);
-
-    if (moved) {
-      user.totalPoints += movementValues.pointsEarned;
-      user.currentSessionStreak += 1;
-
-      if (user.currentSessionStreak > user.bestSessionStreak) {
-        user.bestSessionStreak = user.currentSessionStreak;
-      }
-    } else {
-      user.currentSessionStreak = 0;
-    }
 
     const movementLog = await MovementLog.create({
       userId,
       responseType: moved ? "yes" : "no",
       ...movementValues,
-      sessionStreakAtTime: user.currentSessionStreak,
-      multiplierAtTime: 1,
     });
 
-    await user.save();
-
-    return res.status(201).json({
-      movementLog,
-      user: {
-        _id: user._id,
-        username: user.username,
-        totalPoints: user.totalPoints,
-        currentSessionStreak: user.currentSessionStreak,
-        bestSessionStreak: user.bestSessionStreak,
-      },
-    });
+    return res.status(201).json(movementLog);
   } catch (error) {
     return res.status(500).json({
       error: "Failed to create movement log",
