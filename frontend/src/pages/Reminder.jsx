@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Reminder() {
+function Reminder({ onClose }) {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
@@ -14,12 +14,16 @@ function Reminder() {
 
   const maxSeconds = 10 * 60;
 
+  const testUserId = "69fb1de6036910ecb5c5f8a9";
+
   const fetchMovementLogs = async () => {
     try {
       setLogsLoading(true);
       setLogsError("");
 
-      const response = await fetch("http://localhost:5000/api/movement-log");
+      const response = await fetch(
+        `http://localhost:5000/api/movement-logs/user/${testUserId}`
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch movement logs");
@@ -63,14 +67,15 @@ function Reminder() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/movement-log", {
+      const response = await fetch("http://localhost:5000/api/movement-logs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId: testUserId,
+          moved: responseType === "yes",
           durationSeconds,
-          responseType,
         }),
       });
 
@@ -78,9 +83,13 @@ function Reminder() {
         throw new Error("Failed to save movement response");
       }
 
+      const data = await response.json();
+
       setMessage("Movement response saved.");
+      return data;
     } catch (err) {
       setError("Could not save movement response.");
+      return null;
     }
   };
 
@@ -92,17 +101,18 @@ function Reminder() {
     setIsMoving(true);
   };
 
-  const handleNo = () => {
+  const handleNo = async () => {
     setFinalDuration(0);
 
-    saveMovementResponse(0, "no");
+    await saveMovementResponse(0, "no");
+    fetchMovementLogs();
   };
 
-  const stopStopwatch = () => {
+  const stopStopwatch = async () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
 
-    saveMovementResponse(elapsedSeconds, "yes");
+    await saveMovementResponse(elapsedSeconds, "yes");
     fetchMovementLogs();
   };
 
@@ -114,7 +124,21 @@ function Reminder() {
   };
 
   return (
-    <section>
+    <section style={{ position: "relative" }}>
+      {onClose && (
+        <button
+          type="button"
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: "10px",
+            right: "10px",
+          }}
+        >
+          X
+        </button>
+      )}
+
       <h2>It's time to move!</h2>
 
       <p>Take a short break and move your body.</p>
