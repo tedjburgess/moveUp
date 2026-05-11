@@ -3,6 +3,7 @@ const cors = require("cors");
 
 const healthRoutes = require("./routes/healthRoutes");
 const movementLogRoutes = require("./routes/movementLogRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use("/api/health", healthRoutes);
 app.use("/api/movement-logs", movementLogRoutes);
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "moveUp backend is running" });

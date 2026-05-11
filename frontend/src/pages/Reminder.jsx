@@ -84,9 +84,13 @@ function Reminder({ onClose }) {
         throw new Error("Failed to save movement response");
       }
 
+      const data = await response.json();
+
       setMessage("Movement response saved.");
+      return data;
     } catch (err) {
       setError("Could not save movement response.");
+      return null;
     }
   };
 
@@ -109,11 +113,11 @@ function Reminder({ onClose }) {
     }
   };
 
-  const stopStopwatch = () => {
+  const stopStopwatch = async () => {
     setIsMoving(false);
     setFinalDuration(elapsedSeconds);
 
-    saveMovementResponse(elapsedSeconds, "yes");
+    await saveMovementResponse(elapsedSeconds, "yes");
     fetchMovementLogs();
   };
 
