@@ -14,8 +14,7 @@ function Reminder({ onClose }) {
 
   const maxSeconds = 10 * 60;
 
- 
-  const userId = "69fbb7a5931013d605271be7" // Replace with actual user ID from authentication context in the future.
+  const userId = "69fbb7a5931013d605271be7"; // Replace with actual user ID from authentication context in the future.
 
   const fetchMovementLogs = async () => {
     try {
