@@ -107,3 +107,53 @@ Example:
 PORT=5000
 MONGODB_URI=your_mongodb_connection_string
 ```
+
+## Checkpoint 3 Flow
+
+The Dashboard contains a movement timer that reminds the user to take a break. When the timer reaches zero, a reminder modal opens and asks the user to confirm whether they moved.
+
+If the user clicks **Yes**, the app tracks the movement duration and sends the response to the backend. The backend caps the credited movement time at 600 seconds, calculates points as 1 point per full credited minute, saves the movement log, and updates the user's total points and session streak.
+
+If the user clicks **No**, the app saves a movement response with 0 seconds and 0 points, and the current session streak is reset. Timeout or missed movement responses should also be treated as no movement for the current checkpoint flow.
+
+Recent movement activity can be fetched from the backend so the dashboard can show the latest movement responses, including response type, duration, and points earned.
+
+The leaderboard is based on user data, not a separate leaderboard model. Users are ranked by `totalPoints`, with usernames and current streak data shown where available.
+
+## Local Testing for Checkpoint 3
+
+Start the app from the project root:
+
+```bash
+npm install
+npm run dev
+
+Frontend:
+
+http://localhost:5173
+
+Backend:
+
+http://localhost:5000
+
+Create a local backend .env file:
+
+PORT=5000
+MONGO_URI=your_mongodb_connection_string_here
+
+Do not commit the real .env file.
+
+Useful backend checks:
+
+curl http://localhost:5000/api/health
+
+Fetch recent movement logs for a user:
+
+curl http://localhost:5000/api/movement-logs/user/USER_ID_HERE
+
+Create a movement log:
+
+curl -X POST http://localhost:5000/api/movement-logs -H "Content-Type: application/json" -d "{\"userId\":\"USER_ID_HERE\",\"moved\":true,\"durationSeconds\":120}"
+
+Expected result: the saved movement log includes durationSeconds, creditedSeconds, and pointsEarned.
+```
