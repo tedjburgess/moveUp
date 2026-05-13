@@ -1,10 +1,21 @@
-function ScoreStreakSummary() {
+function ScoreStreakSummary({ userStats, isLoading, error }) {
   return (
     <div>
       <h3>Score / Streak</h3>
-      <p>Points: 0</p>
-      <p>Current streak: 0</p>
-      <p>Best session streak: 0</p>
+
+      {isLoading && <p>Loading stats...</p>}
+
+      {error && <p>{error}</p>}
+
+      {userStats && (
+        <>
+          <p>Total points: {userStats.totalPoints}</p>
+
+          <p>Current streak: {userStats.currentSessionStreak}</p>
+
+          <p>Best session streak: {userStats.bestSessionStreak}</p>
+        </>
+      )}
     </div>
   );
 }
