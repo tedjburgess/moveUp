@@ -3,8 +3,9 @@ const User = require("../models/User");
 const getUserSummary = async (req, res) => {
   try {
     const userId = req.params.userId;
-
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select(
+      "username email totalPoints currentSessionStreak bestSessionStreak",
+    );
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -12,6 +13,8 @@ const getUserSummary = async (req, res) => {
 
     return res.status(200).json({
       user: {
+        username: user.username,
+        email: user.email,
         totalPoints: user.totalPoints,
         currentSessionStreak: user.currentSessionStreak,
         bestSessionStreak: user.bestSessionStreak,
