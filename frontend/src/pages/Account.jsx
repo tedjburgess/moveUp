@@ -14,7 +14,7 @@ function Account() {
         const userId = storedUserId || testUserId;
 
         const response = await fetch(
-          `http://localhost:5000/api/users/${userId}/summary`,
+          `http://localhost:5000/api/users/${userId}/summary`
         );
 
         if (!response.ok) {

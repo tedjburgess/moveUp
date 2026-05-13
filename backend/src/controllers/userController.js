@@ -4,7 +4,7 @@ const getUserSummary = async (req, res) => {
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId).select(
-      "username email totalPoints currentSessionStreak bestSessionStreak",
+      "username email totalPoints currentSessionStreak bestSessionStreak"
     );
 
     if (!user) {
