@@ -4,35 +4,67 @@ import ReminderModal from "../components/dashboard/ReminderModal.jsx";
 import ScoreStreakSummary from "../components/dashboard/ScoreStreakSummary.jsx";
 
 const reminderIntervalSeconds = 10;
-const testUserId = "69fbb7a5931013d605271be7";
+const testUserId = "6a01cca5c9be6b5ff3977eda";
 
 function Dashboard() {
   const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
+
   const [movementLogs, setMovementLogs] = useState([]);
   const [activityError, setActivityError] = useState("");
 
-  useEffect(() => {
-    const fetchMovementLogs = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:5000/api/movement-logs/user/${testUserId}`
-        );
+  const [userStats, setUserStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(false);
+  const [statsError, setStatsError] = useState("");
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch movement logs");
-        }
+  const fetchMovementLogs = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/movement-logs/user/${testUserId}`
+      );
 
-        const data = await response.json();
-        setMovementLogs(data);
-        setActivityError("");
-      } catch (error) {
-        setActivityError("Could not load recent activity.");
+      if (!response.ok) {
+        throw new Error("Failed to fetch movement logs");
       }
-    };
 
-    fetchMovementLogs();
+      const data = await response.json();
+      setMovementLogs(data);
+      setActivityError("");
+    } catch (error) {
+      setActivityError("Could not load recent activity.");
+    }
+  };
+
+  const fetchUserStats = async () => {
+    try {
+      setStatsLoading(true);
+      setStatsError("");
+
+      const response = await fetch(
+        `http://localhost:5000/api/users/${testUserId}/summary`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch user stats");
+      }
+
+      const data = await response.json();
+      setUserStats(data.user);
+    } catch (error) {
+      setStatsError(error.message);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  const refreshDashboardData = async () => {
+    await fetchUserStats();
+    await fetchMovementLogs();
+  };
+
+  useEffect(() => {
+    refreshDashboardData();
   }, []);
 
   useEffect(() => {
@@ -75,7 +107,11 @@ function Dashboard() {
         onStartTimer={startTimer}
       />
 
-      <ScoreStreakSummary />
+      <ScoreStreakSummary
+        userStats={userStats}
+        isLoading={statsLoading}
+        error={statsError}
+      />
 
       <div>
         <h3>Recent Activity</h3>
@@ -99,7 +135,12 @@ function Dashboard() {
         )}
       </div>
 
-      {isReminderModalOpen && <ReminderModal onClose={closeReminderModal} />}
+      {isReminderModalOpen && (
+        <ReminderModal
+          onClose={closeReminderModal}
+          onMovementSaved={refreshDashboardData}
+        />
+      )}
     </section>
   );
 }

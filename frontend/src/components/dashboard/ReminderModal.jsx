@@ -1,6 +1,6 @@
 import Reminder from "../../pages/Reminder.jsx";
 
-function ReminderModal({ onClose }) {
+function ReminderModal({ onClose, onMovementSaved }) {
   return (
     <div
       style={{
@@ -21,7 +21,7 @@ function ReminderModal({ onClose }) {
           textAlign: "center",
         }}
       >
-        <Reminder onClose={onClose} />
+        <Reminder onClose={onClose} onMovementSaved={onMovementSaved} />
       </div>
     </div>
   );

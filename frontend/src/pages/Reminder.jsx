@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Reminder({ onClose }) {
+function Reminder({ onClose, onMovementSaved }) {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
@@ -14,7 +14,7 @@ function Reminder({ onClose }) {
 
   const maxSeconds = 10 * 60;
 
-  const testUserId = "69fb1de6036910ecb5c5f8a9";
+  const testUserId = "6a01cca5c9be6b5ff3977eda";
 
   const fetchMovementLogs = async () => {
     try {
@@ -86,6 +86,10 @@ function Reminder({ onClose }) {
       const data = await response.json();
 
       setMessage("Movement response saved.");
+
+      if (onMovementSaved) {
+        onMovementSaved();
+      }
       return data;
     } catch (err) {
       setError("Could not save movement response.");
