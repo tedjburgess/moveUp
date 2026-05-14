@@ -14,7 +14,7 @@ function Reminder({ onClose }) {
 
   const maxSeconds = 10 * 60;
 
-  const userId = "69fbb7a5931013d605271be7";
+  const userId = "6a01cca5c9be6b5ff3977ed8";
 
   const fetchMovementLogs = async () => {
     try {
