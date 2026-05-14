@@ -4,6 +4,8 @@ const router = express.Router();
 const {
   getUserSummary,
   getLeaderboard,
+  getUserSettings,
+  updateUserSettings,
 } = require("../controllers/userController");
 
 const requireAuth = require("../middleware/authMiddleware");
@@ -14,6 +16,9 @@ router.get("/me/test", requireAuth, (req, res) => {
     userId: req.userId,
   });
 });
+
+router.get("/me/settings", requireAuth, getUserSettings);
+router.patch("/me/settings", requireAuth, updateUserSettings);
 
 router.get("/leaderboard", getLeaderboard);
 router.get("/:userId/summary", getUserSummary);
