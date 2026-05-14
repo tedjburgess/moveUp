@@ -5,6 +5,7 @@ import Reminder from "./pages/Reminder.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Account from "./pages/Account.jsx";
+import Leaderboard from "./pages/Leaderboard.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -20,7 +21,9 @@ function App() {
               <button onClick={() => setCurrentPage("home")}>Home</button>
             </li>
             <li>
-              <button>Leaderboard</button>
+              <button onClick={() => setCurrentPage("leaderboard")}>
+                Leaderboard
+              </button>
             </li>
             <li>
               <button onClick={() => setCurrentPage("account")}>Account</button>
@@ -52,6 +55,7 @@ function App() {
         {currentPage === "signup" && <SignUp />}
         {currentPage === "dashboard" && <Dashboard />}
         {currentPage === "account" && <Account />}
+        {currentPage === "leaderboard" && <Leaderboard />}
       </main>
     </div>
   );
