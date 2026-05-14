@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Reminder({ onClose }) {
+function Reminder({ onClose, onMovementSaved }) {
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
@@ -86,6 +86,10 @@ function Reminder({ onClose }) {
       const data = await response.json();
 
       setMessage("Movement response saved.");
+
+      if (onMovementSaved) {
+        onMovementSaved();
+      }
       return data;
     } catch (err) {
       setError("Could not save movement response.");
