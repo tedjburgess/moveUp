@@ -75,6 +75,18 @@ const updateUserSettings = async (req, res) => {
       user.reminderMode = reminderMode;
     }
 
+    if (reminderMode === "custom") {
+      if (
+        typeof customReminderMinutes !== "number" ||
+        customReminderMinutes <= 0 ||
+        customReminderMinutes > 60
+      ) {
+        return res.status(400).json({
+          error: "customReminderMinutes must be between 1 and 60",
+        });
+      }
+    }
+
     if (customReminderMinutes !== undefined) {
       user.customReminderMinutes = customReminderMinutes;
     }
