@@ -157,3 +157,45 @@ curl -X POST http://localhost:5000/api/movement-logs -H "Content-Type: applicati
 
 Expected result: the saved movement log includes durationSeconds, creditedSeconds, and pointsEarned.
 ```
+
+## Checkpoint 4 Technical Decisions
+
+During Checkpoint 4, the project started adding authentication and account-related features. The goal is to move from hardcoded test users toward a logged-in user flow, while still keeping the app simple enough for the current checkpoint.
+
+### Database and Mongoose
+
+MongoDB is used because the project needs to store users, movement logs, reminder settings, points, and streak data. Mongoose is used on the backend to define schemas for this data and to make database access easier to organize in the Express controllers.
+
+### Authentication Approach
+
+The project is moving toward JWT-based authentication. JWTs allow the backend to identify the logged-in user when protected routes are called. This is useful for account pages, reminder settings, movement logs, and future features where users should only access their own data.
+
+Some frontend pages may still use a temporary test user while the full login flow is being connected. This is treated as guest/test mode. Logged-in mode should use the authenticated user's ID from the backend instead of trusting a user ID sent manually from the frontend.
+
+### Backend Folder Structure
+
+The backend is split into separate folders to keep the code easier to maintain:
+
+- `models/` defines MongoDB/Mongoose schemas.
+- `routes/` defines the API endpoints.
+- `controllers/` contains request and response logic.
+- `middleware/` contains reusable Express middleware, such as authentication checks.
+- `config/` contains setup code such as database connection logic.
+
+This structure keeps route files small and puts most business logic in controllers.
+
+### Leaderboard Decision
+
+The leaderboard is calculated from existing user data instead of being stored in a separate leaderboard collection. Users are ranked by `totalPoints`, and the response can include fields such as `username`, `currentSessionStreak`, and `bestSessionStreak`.
+
+This avoids duplicate data and keeps the leaderboard in sync with the user records.
+
+### Account and Reminder Settings
+
+The Account page is intended to show basic user information such as username, email, total points, and current streak. It is also where reminder settings belong.
+
+Reminder settings include a science-informed default mode and a custom interval mode. The wording avoids strong medical claims and keeps the feature focused on helpful movement reminders.
+
+### Alternatives Considered
+
+A separate leaderboard model was considered, but it would create duplicate data that could become outdated. Storing reminder settings in a separate settings model was also considered, but for this stage it is simpler to keep basic reminder preferences on the user document.
