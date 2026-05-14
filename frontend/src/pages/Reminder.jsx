@@ -14,7 +14,7 @@ function Reminder({ onClose, onMovementSaved }) {
 
   const maxSeconds = 10 * 60;
 
-  const testUserId = "6a01cca5c9be6b5ff3977eda";
+  const userId = "6a01cca5c9be6b5ff3977ed8";
 
   const fetchMovementLogs = async () => {
     try {
@@ -22,7 +22,7 @@ function Reminder({ onClose, onMovementSaved }) {
       setLogsError("");
 
       const response = await fetch(
-        `http://localhost:5000/api/movement-logs/user/${testUserId}`
+        `http://localhost:5000/api/movement-logs/user/${userId}`
       );
 
       if (!response.ok) {
@@ -73,7 +73,7 @@ function Reminder({ onClose, onMovementSaved }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: testUserId,
+          userId,
           moved: responseType === "yes",
           durationSeconds,
         }),
@@ -109,7 +109,11 @@ function Reminder({ onClose, onMovementSaved }) {
     setFinalDuration(0);
 
     await saveMovementResponse(0, "no");
-    fetchMovementLogs();
+    await fetchMovementLogs();
+
+    if (onClose) {
+      onClose();
+    }
   };
 
   const stopStopwatch = async () => {
@@ -184,15 +188,13 @@ function Reminder({ onClose, onMovementSaved }) {
 
       {!logsLoading && !logsError && movementLogs.length > 0 && (
         <ul>
-          {movementLogs
-            .filter((log) => log.moved)
-            .map((log) => (
-              <li key={log._id}>
-                <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
-                <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
-                <strong>Points:</strong> {log.pointsEarned}
-              </li>
-            ))}
+          {movementLogs.map((log) => (
+            <li key={log._id}>
+              <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
+              <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
+              <strong>Points:</strong> {log.pointsEarned}
+            </li>
+          ))}
         </ul>
       )}
 
