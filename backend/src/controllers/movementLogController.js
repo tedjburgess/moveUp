@@ -1,8 +1,8 @@
 const MovementLog = require("../models/MovementLog");
 const User = require("../models/User");
 
-const calculateMovementLogValues = (moved, durationSeconds) => {
-  if (!moved) {
+const calculateMovementLogValues = (responseType, durationSeconds) => {
+  if (responseType === "no" || responseType === "timeout") {
     return {
       moved: false,
       durationSeconds: 0,
@@ -25,24 +25,33 @@ const calculateMovementLogValues = (moved, durationSeconds) => {
 
 const createMovementLog = async (req, res) => {
   try {
-    const { userId, moved, durationSeconds } = req.body;
+    const { userId, moved, durationSeconds, responseType } = req.body;
 
-    if (!userId || typeof moved !== "boolean") {
+    const finalUserId = req.user?.id || userId;
+    const finalResponseType = responseType || (moved === true ? "yes" : "no");
+
+    if (!finalUserId || !["yes", "no", "timeout"].includes(finalResponseType)) {
       return res.status(400).json({
-        error: "userId and moved are required",
+        error: "userId and valid responseType are required",
       });
     }
 
-    const user = await User.findById(userId);
+    const user = await User.findById(finalUserId);
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({
+        error: "User not found",
+      });
     }
 
-    const movementValues = calculateMovementLogValues(moved, durationSeconds);
+    const movementValues = calculateMovementLogValues(
+      finalResponseType,
+      durationSeconds
+    );
 
-    if (moved) {
-      user.totalPoints += movementValues.pointsEarned;
+    user.totalPoints += movementValues.pointsEarned;
+
+    if (movementValues.moved) {
       user.currentSessionStreak += 1;
 
       if (user.currentSessionStreak > user.bestSessionStreak) {
@@ -52,26 +61,17 @@ const createMovementLog = async (req, res) => {
       user.currentSessionStreak = 0;
     }
 
+    await user.save();
+
     const movementLog = await MovementLog.create({
-      userId,
-      responseType: moved ? "yes" : "no",
+      userId: finalUserId,
+      responseType: finalResponseType,
       ...movementValues,
       sessionStreakAtTime: user.currentSessionStreak,
       multiplierAtTime: 1,
     });
 
-    await user.save();
-
-    return res.status(201).json({
-      movementLog,
-      user: {
-        _id: user._id,
-        username: user.username,
-        totalPoints: user.totalPoints,
-        currentSessionStreak: user.currentSessionStreak,
-        bestSessionStreak: user.bestSessionStreak,
-      },
-    });
+    return res.status(201).json(movementLog);
   } catch (error) {
     return res.status(500).json({
       error: "Failed to create movement log",
@@ -81,9 +81,9 @@ const createMovementLog = async (req, res) => {
 
 const getMovementLogsByUser = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const finalUserId = req.user?.id || req.params.userId;
 
-    const movementLogs = await MovementLog.find({ userId }).sort({
+    const movementLogs = await MovementLog.find({ userId: finalUserId }).sort({
       createdAt: -1,
     });
 
