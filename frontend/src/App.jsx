@@ -5,6 +5,7 @@ import Reminder from "./pages/Reminder.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
+import Account from "./pages/Account.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -24,7 +25,7 @@ function App() {
               <button>Leaderboard</button>
             </li>
             <li>
-              <button>Account</button>
+              <button onClick={() => setCurrentPage("account")}>Account</button>
             </li>
             <li>
               <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
@@ -63,6 +64,7 @@ function App() {
         {currentPage === "reminder" && <Reminder />}
         {currentPage === "signup" && <SignUp />}
         {currentPage === "dashboard" && <Dashboard />}
+        {currentPage === "account" && <Account />}
       </main>
     </div>
   );
