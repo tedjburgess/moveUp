@@ -12,19 +12,16 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -64,9 +61,7 @@ function Login() {
       <br />
       <br />
 
-      <button onClick={handleLogin}>
-        Login
-      </button>
+      <button onClick={handleLogin}>Login</button>
 
       {message && <p>{message}</p>}
       {error && <p>{error}</p>}

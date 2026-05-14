@@ -30,9 +30,7 @@ function App() {
               <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
             </li>
             <li>
-              <button onClick={() => setCurrentPage("login")}>
-                Login
-              </button>
+              <button onClick={() => setCurrentPage("login")}>Login</button>
             </li>
             <li>
               <button onClick={() => setCurrentPage("about")}>About</button>
