@@ -62,6 +62,29 @@ function Reminder({ onClose, onMovementSaved }) {
     return () => clearInterval(timer);
   }, [isMoving]);
 
+  useEffect(() => {
+    if (!onClose) {
+      return;
+    }
+
+    const timeout = setTimeout(
+      async () => {
+        await saveMovementResponse(0, "timeout");
+
+        await fetchMovementLogs();
+
+        if (onMovementSaved) {
+          onMovementSaved();
+        }
+
+        onClose();
+      },
+      5 * 60 * 1000
+    );
+
+    return () => clearTimeout(timeout);
+  }, [onClose]);
+
   const saveMovementResponse = async (durationSeconds, responseType) => {
     setMessage("");
     setError("");
