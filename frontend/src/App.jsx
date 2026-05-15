@@ -6,6 +6,7 @@ import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import Account from "./pages/Account.jsx";
+import Login from "./pages/Login.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
 
 function App() {
@@ -32,6 +33,9 @@ function App() {
             </li>
             <li>
               <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
+            </li>
+            <li>
+              <button onClick={() => setCurrentPage("login")}>Login</button>
             </li>
             <li>
               <button onClick={() => setCurrentPage("about")}>About</button>
@@ -68,6 +72,7 @@ function App() {
         {currentPage === "signup" && <SignUp />}
         {currentPage === "dashboard" && <Dashboard />}
         {currentPage === "account" && <Account />}
+        {currentPage === "login" && <Login />}
         {currentPage === "leaderboard" && <Leaderboard />}
       </main>
     </div>
