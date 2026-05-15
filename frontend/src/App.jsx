@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
 import Account from "./pages/Account.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
+import ProtectedPage from "./components/auth/ProtectedPage.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -66,8 +67,25 @@ function App() {
         {currentPage === "about" && <About />}
         {currentPage === "reminder" && <Reminder />}
         {currentPage === "signup" && <SignUp />}
-        {currentPage === "dashboard" && <Dashboard />}
-        {currentPage === "account" && <Account />}
+
+        {currentPage === "dashboard" && (
+          <ProtectedPage
+            pageName="Dashboard"
+            onGoHome={() => setCurrentPage("home")}
+          >
+            <Dashboard />
+          </ProtectedPage>
+        )}
+
+        {currentPage === "account" && (
+          <ProtectedPage
+            pageName="Account"
+            onGoHome={() => setCurrentPage("home")}
+          >
+            <Account />
+          </ProtectedPage>
+        )}
+
         {currentPage === "leaderboard" && <Leaderboard />}
       </main>
     </div>

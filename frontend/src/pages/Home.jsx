@@ -1,3 +1,5 @@
+import GuestReminder from "../components/home/GuestReminder.jsx";
+
 function Home({ setCurrentPage }) {
   return (
     <section>
@@ -7,11 +9,10 @@ function Home({ setCurrentPage }) {
       <p>Welcome to MoveUp!</p>
 
       <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi porro
-        vitae labore corrupti, consequuntur ex delectus. Itaque odit, numquam
-        asperiores, dolore ipsum amet sint tempore quisquam esse qui quibusdam
-        deserunt!
+        Build healthier movement habits with reminders and movement tracking.
       </p>
+
+      <GuestReminder />
     </section>
   );
 }
