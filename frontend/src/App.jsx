@@ -4,11 +4,13 @@ import About from "./pages/About.jsx";
 import Reminder from "./pages/Reminder.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import { useAuth } from "./context/AuthContext.jsx";
 import Account from "./pages/Account.jsx";
 import Leaderboard from "./pages/Leaderboard.jsx";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
+  const { user, isLoggedIn, logout } = useAuth();
 
   return (
     <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
@@ -46,6 +48,17 @@ function App() {
             </li>
           </ul>
         </nav>
+
+        {isLoggedIn ? (
+          <>
+            <p>Logged in as {user.username}</p>
+            <button type="button" onClick={logout}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <p>Not logged in</p>
+        )}
       </header>
 
       <main>
