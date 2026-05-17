@@ -6,6 +6,7 @@ const {
   getLeaderboard,
   getUserSettings,
   updateUserSettings,
+  getUserStats,
 } = require("../controllers/userController");
 
 const requireAuth = require("../middleware/authMiddleware");
@@ -22,5 +23,6 @@ router.patch("/me/settings", requireAuth, updateUserSettings);
 
 router.get("/leaderboard", getLeaderboard);
 router.get("/:userId/summary", getUserSummary);
+router.get("/:userId/stats", getUserStats);
 
 module.exports = router;

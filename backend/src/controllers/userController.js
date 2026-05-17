@@ -25,6 +25,31 @@ const getUserSummary = async (req, res) => {
   }
 };
 
+const getUserStats = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId).select(
+      "totalPoints currentSessionStreak bestSessionStreak bestDailyStreak lastDailyBonusDate"
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({
+      user: {
+        totalPoints: user.totalPoints,
+        currentSessionStreak: user.currentSessionStreak,
+        bestSessionStreak: user.bestSessionStreak,
+        bestDailyStreak: user.bestDailyStreak,
+        lastDailyBonusDate: user.lastDailyBonusDate,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to retrieve user summary" });
+  }
+};
+
 const getLeaderboard = async (req, res) => {
   try {
     const users = await User.find()
@@ -108,4 +133,5 @@ module.exports = {
   getLeaderboard,
   getUserSettings,
   updateUserSettings,
+  getUserStats,
 };
