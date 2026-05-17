@@ -15,9 +15,6 @@ const getUserSummary = async (req, res) => {
       user: {
         username: user.username,
         email: user.email,
-        totalPoints: user.totalPoints,
-        currentSessionStreak: user.currentSessionStreak,
-        bestSessionStreak: user.bestSessionStreak,
       },
     });
   } catch (error) {
