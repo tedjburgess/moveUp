@@ -1,18 +1,45 @@
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import GuestReminder from "../components/home/GuestReminder.jsx";
+
 function Home({ setCurrentPage }) {
   return (
-    <section>
-      <button onClick={() => setCurrentPage("signup")}>Sign Up Now!</button>
+    <Box
+      component="section"
+      sx={{
+        minHeight: "75vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f5f7fb",
+        padding: 4,
+      }}
+    >
+      <Card
+        sx={{ maxWidth: 760, width: "100%", borderRadius: 4, boxShadow: 4 }}
+      >
+        <CardContent sx={{ padding: 4 }}>
+          <Typography variant="h3" fontWeight="bold" gutterBottom>
+            Welcome to MoveUp
+          </Typography>
 
-      <h2>Home</h2>
-      <p>Welcome to MoveUp!</p>
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+            Build healthier movement habits with reminders and movement
+            tracking.
+          </Typography>
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Commodi porro
-        vitae labore corrupti, consequuntur ex delectus. Itaque odit, numquam
-        asperiores, dolore ipsum amet sint tempore quisquam esse qui quibusdam
-        deserunt!
-      </p>
-    </section>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={() => setCurrentPage("signup")}
+            sx={{ mb: 4, borderRadius: 3 }}
+          >
+            Sign Up Now
+          </Button>
+
+          <GuestReminder />
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 

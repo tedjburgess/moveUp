@@ -34,7 +34,75 @@ const getLeaderboard = async (req, res) => {
   }
 };
 
+const getUserSettings = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select(
+      "reminderMode customReminderMinutes timezone"
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({
+      reminderMode: user.reminderMode,
+      customReminderMinutes: user.customReminderMinutes,
+      timezone: user.timezone,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to retrieve user settings" });
+  }
+};
+
+const updateUserSettings = async (req, res) => {
+  try {
+    const { reminderMode, customReminderMinutes } = req.body;
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (reminderMode !== undefined) {
+      if (!["science", "custom"].includes(reminderMode)) {
+        return res.status(400).json({ error: "Invalid reminderMode" });
+      }
+
+      user.reminderMode = reminderMode;
+    }
+
+    if (reminderMode === "custom") {
+      if (
+        typeof customReminderMinutes !== "number" ||
+        customReminderMinutes <= 0 ||
+        customReminderMinutes > 60
+      ) {
+        return res.status(400).json({
+          error: "customReminderMinutes must be between 1 and 60",
+        });
+      }
+    }
+
+    if (customReminderMinutes !== undefined) {
+      user.customReminderMinutes = customReminderMinutes;
+    }
+
+    await user.save();
+
+    return res.status(200).json({
+      reminderMode: user.reminderMode,
+      customReminderMinutes: user.customReminderMinutes,
+      timezone: user.timezone,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to update user settings" });
+  }
+};
+
 module.exports = {
   getUserSummary,
   getLeaderboard,
+  getUserSettings,
+  updateUserSettings,
 };
