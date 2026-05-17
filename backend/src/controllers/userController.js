@@ -3,9 +3,7 @@ const User = require("../models/User");
 const getUserSummary = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const user = await User.findById(userId).select(
-      "username email totalPoints currentSessionStreak bestSessionStreak"
-    );
+    const user = await User.findById(userId).select("username email");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
