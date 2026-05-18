@@ -53,7 +53,7 @@ const getUserStats = async (req, res) => {
 const getLeaderboard = async (req, res) => {
   try {
     const users = await User.find()
-      .select("username totalPoints currentSessionStreak bestSessionStreak")
+      .select("username totalPoints")
       .sort({ totalPoints: -1 });
 
     return res.status(200).json(users);
