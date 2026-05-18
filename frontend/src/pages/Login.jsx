@@ -1,3 +1,12 @@
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 
 function Login() {
@@ -38,34 +47,54 @@ function Login() {
   };
 
   return (
-    <section>
-      <h2>Login</h2>
+    <Box
+      component="section"
+      sx={{
+        minHeight: "70vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Card
+        sx={{ width: "100%", maxWidth: 460, borderRadius: 4, boxShadow: 3 }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            Login
+          </Typography>
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Log in to continue tracking your movement habits.
+          </Typography>
 
-      <br />
-      <br />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              fullWidth
+            />
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              fullWidth
+            />
 
-      <br />
-      <br />
+            <Button variant="contained" size="large" onClick={handleLogin}>
+              Login
+            </Button>
 
-      <button onClick={handleLogin}>Login</button>
-
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
-    </section>
+            {message && <Alert severity="success">{message}</Alert>}
+            {error && <Alert severity="error">{error}</Alert>}
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 
