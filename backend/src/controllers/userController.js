@@ -5,7 +5,6 @@ const getUserSummary = async (req, res) => {
     const userId = req.params.userId;
     const user = await User.findById(userId).select("username email");
 
-
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -17,7 +16,9 @@ const getUserSummary = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ error: "Failed to retrieve email and username" });
+    return res
+      .status(500)
+      .json({ error: "Failed to retrieve email and username" });
   }
 };
 
