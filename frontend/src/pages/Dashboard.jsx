@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import MovementTimer from "../components/dashboard/MovementTimer.jsx";
 import ReminderModal from "../components/dashboard/ReminderModal.jsx";
 import ScoreStreakSummary from "../components/dashboard/ScoreStreakSummary.jsx";
+import API_BASE_URL from "../config/api.js";
 
 const reminderIntervalSeconds = 10;
 const testUserId = "6a01cca5c9be6b5ff3977eda";
@@ -21,7 +22,7 @@ function Dashboard() {
   const fetchMovementLogs = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/movement-logs/user/${testUserId}`
+        `${API_BASE_URL}/api/movement-logs/user/${testUserId}`
       );
 
       if (!response.ok) {
@@ -42,7 +43,7 @@ function Dashboard() {
       setStatsError("");
 
       const response = await fetch(
-        `http://localhost:5000/api/users/${testUserId}/summary`
+        `${API_BASE_URL}/api/users/${testUserId}/summary`
       );
 
       if (!response.ok) {
