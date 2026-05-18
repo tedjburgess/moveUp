@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../config/api.js";
 
 function Leaderboard() {
   const [users, setUsers] = useState([]);
@@ -22,9 +23,7 @@ function Leaderboard() {
         setIsLoading(true);
         setError("");
 
-        const response = await fetch(
-          "http://localhost:5000/api/users/leaderboard"
-        );
+        const response = await fetch(`${API_BASE_URL}/api/users/leaderboard`);
 
         if (!response.ok) {
           throw new Error("Failed to fetch leaderboard");

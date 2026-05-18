@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../config/api.js";
 
 const testUserId = "6a01cca5c9be6b5ff3977ed9";
 
@@ -21,7 +22,7 @@ function Account() {
         const userId = getCurrentUserId();
 
         const response = await fetch(
-          `http://localhost:5000/api/users/${userId}/summary`
+          `${API_BASE_URL}/api/users/${userId}/summary`
         );
 
         if (!response.ok) {
@@ -55,7 +56,7 @@ function Account() {
       const userId = getCurrentUserId();
 
       const response = await fetch(
-        `http://localhost:5000/api/users/${userId}/reminder-settings`,
+        `${API_BASE_URL}/api/users/${userId}/reminder-settings`,
         {
           method: "PATCH",
           headers: {

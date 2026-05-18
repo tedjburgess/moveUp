@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import API_BASE_URL from "../config/api.js";
 
 function Reminder({ onClose, onMovementSaved }) {
   const [isMoving, setIsMoving] = useState(false);
@@ -22,7 +23,7 @@ function Reminder({ onClose, onMovementSaved }) {
       setLogsError("");
 
       const response = await fetch(
-        `http://localhost:5000/api/movement-logs/user/${userId}`
+        `${API_BASE_URL}/api/movement-logs/user/${userId}`
       );
 
       if (!response.ok) {
@@ -90,7 +91,7 @@ function Reminder({ onClose, onMovementSaved }) {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/movement-logs", {
+      const response = await fetch("${API_BASE_URL}/api/movement-logs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
