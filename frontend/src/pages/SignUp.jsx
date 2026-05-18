@@ -1,3 +1,12 @@
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 
 function SignUp() {
@@ -41,44 +50,61 @@ function SignUp() {
   };
 
   return (
-    <section>
-      <h2>Sign Up</h2>
+    <Box
+      component="section"
+      sx={{
+        minHeight: "70vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Card
+        sx={{ width: "100%", maxWidth: 480, borderRadius: 4, boxShadow: 3 }}
+      >
+        <CardContent sx={{ p: 4 }}>
+          <Typography variant="h4" fontWeight="bold" gutterBottom>
+            Create account
+          </Typography>
 
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={(event) => setUsername(event.target.value)}
-      />
+          <Typography color="text.secondary" sx={{ mb: 3 }}>
+            Sign up to start tracking your movement habits.
+          </Typography>
 
-      <br />
-      <br />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              fullWidth
+            />
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-      />
+            <TextField
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              fullWidth
+            />
 
-      <br />
-      <br />
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              fullWidth
+            />
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
+            <Button variant="contained" size="large" onClick={handleSignUp}>
+              Create Account
+            </Button>
 
-      <br />
-      <br />
-
-      <button onClick={handleSignUp}>Create Account</button>
-
-      {message && <p>{message}</p>}
-      {error && <p>{error}</p>}
-    </section>
+            {message && <Alert severity="success">{message}</Alert>}
+            {error && <Alert severity="error">{error}</Alert>}
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 
