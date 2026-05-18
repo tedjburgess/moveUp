@@ -98,49 +98,193 @@ function Dashboard() {
   };
 
   return (
-    <section>
-      <h2>Dashboard</h2>
+    <section
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f8",
+        padding: "40px 20px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1100px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px",
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "16px",
+            padding: "32px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: "36px",
+              marginBottom: "10px",
+              color: "#111827",
+            }}
+          >
+            Dashboard
+          </h1>
 
-      <MovementTimer
-        secondsLeft={secondsLeft}
-        isTimerRunning={isTimerRunning}
-        onStartTimer={startTimer}
-      />
+          <p
+            style={{
+              color: "#6b7280",
+              fontSize: "16px",
+            }}
+          >
+            Track your movement habits and improve your daily activity.
+          </p>
+        </div>
 
-      <ScoreStreakSummary
-        userStats={userStats}
-        isLoading={statsLoading}
-        error={statsError}
-      />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "24px",
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "24px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "20px",
+                color: "#111827",
+              }}
+            >
+              Movement Timer
+            </h2>
 
-      <div>
-        <h3>Recent Activity</h3>
+            <MovementTimer
+              secondsLeft={secondsLeft}
+              isTimerRunning={isTimerRunning}
+              onStartTimer={startTimer}
+            />
+          </div>
 
-        {activityError && <p>{activityError}</p>}
+          <div
+            style={{
+              backgroundColor: "white",
+              borderRadius: "16px",
+              padding: "24px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            }}
+          >
+            <h2
+              style={{
+                marginBottom: "20px",
+                color: "#111827",
+              }}
+            >
+              Statistics
+            </h2>
 
-        {!activityError && movementLogs.length === 0 && (
-          <p>No recent activity yet.</p>
-        )}
+            <ScoreStreakSummary
+              userStats={userStats}
+              isLoading={statsLoading}
+              error={statsError}
+            />
+          </div>
+        </div>
 
-        {!activityError && movementLogs.length > 0 && (
-          <ul>
-            {movementLogs.slice(0, 5).map((log) => (
-              <li key={log._id}>
-                <strong>{log.responseType}</strong> —{" "}
-                {log.moved ? `${log.durationSeconds} seconds` : "0 seconds"} —{" "}
-                {log.pointsEarned} points
-              </li>
-            ))}
-          </ul>
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "16px",
+            padding: "24px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2
+            style={{
+              marginBottom: "20px",
+              color: "#111827",
+            }}
+          >
+            Recent Activity
+          </h2>
+
+          {activityError && <p style={{ color: "red" }}>{activityError}</p>}
+
+          {!activityError && movementLogs.length === 0 && (
+            <p
+              style={{
+                color: "#6b7280",
+              }}
+            >
+              No recent activity yet.
+            </p>
+          )}
+
+          {!activityError && movementLogs.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              {movementLogs.slice(0, 5).map((log) => (
+                <div
+                  key={log._id}
+                  style={{
+                    backgroundColor: "#f9fafb",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "12px",
+                    padding: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    flexWrap: "wrap",
+                    gap: "10px",
+                  }}
+                >
+                  <div>
+                    <strong>{log.responseType}</strong>
+                  </div>
+
+                  <div
+                    style={{
+                      color: "#374151",
+                    }}
+                  >
+                    {log.moved ? `${log.durationSeconds} seconds` : "0 seconds"}
+                  </div>
+
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#2563eb",
+                    }}
+                  >
+                    {log.pointsEarned} pts
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {isReminderModalOpen && (
+          <ReminderModal
+            onClose={closeReminderModal}
+            onMovementSaved={refreshDashboardData}
+          />
         )}
       </div>
-
-      {isReminderModalOpen && (
-        <ReminderModal
-          onClose={closeReminderModal}
-          onMovementSaved={refreshDashboardData}
-        />
-      )}
     </section>
   );
 }
