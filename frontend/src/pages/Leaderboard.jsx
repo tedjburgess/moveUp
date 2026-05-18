@@ -1,3 +1,14 @@
+import {
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  CircularProgress,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 
 function Leaderboard() {
@@ -32,27 +43,55 @@ function Leaderboard() {
   }, []);
 
   return (
-    <section>
-      <h2>Leaderboard</h2>
+    <Box>
+      <Typography variant="h3" fontWeight="bold" gutterBottom>
+        Leaderboard
+      </Typography>
 
-      {isLoading && <p>Loading leaderboard...</p>}
+      <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+        See the top MoveUp users ranked by total points.
+      </Typography>
 
-      {error && <p>{error}</p>}
+      <Card sx={{ borderRadius: 4, boxShadow: 3 }}>
+        <CardContent>
+          {isLoading && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <CircularProgress size={24} />
+              <Typography>Loading leaderboard...</Typography>
+            </Box>
+          )}
 
-      {!isLoading && !error && users.length === 0 && (
-        <p>No leaderboard users found.</p>
-      )}
+          {error && <Alert severity="error">{error}</Alert>}
 
-      {!isLoading && !error && users.length > 0 && (
-        <ol>
-          {users.map((user) => (
-            <li key={user._id}>
-              <strong>{user.username}</strong> — {user.totalPoints} points
-            </li>
-          ))}
-        </ol>
-      )}
-    </section>
+          {!isLoading && !error && users.length === 0 && (
+            <Alert severity="info">No leaderboard users found.</Alert>
+          )}
+
+          {!isLoading && !error && users.length > 0 && (
+            <List>
+              {users.map((user, index) => (
+                <ListItem
+                  key={user._id}
+                  divider={index !== users.length - 1}
+                  sx={{
+                    borderRadius: 2,
+                    px: 2,
+                  }}
+                >
+                  <ListItemText
+                    primary={`#${index + 1} ${user.username}`}
+                    secondary={`${user.totalPoints} points`}
+                    primaryTypographyProps={{
+                      fontWeight: "bold",
+                    }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
 

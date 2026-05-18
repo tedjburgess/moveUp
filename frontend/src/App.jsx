@@ -1,4 +1,12 @@
 import { useState } from "react";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
 import Reminder from "./pages/Reminder.jsx";
@@ -15,58 +23,69 @@ function App() {
   const { user, isLoggedIn, logout } = useAuth();
 
   return (
-    <div style={{ fontFamily: "Arial, sans-serif", padding: "20px" }}>
-      <header>
-        <h1>MoveUp</h1>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#f5f7fb",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <AppBar position="static" color="default" elevation={1}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{ cursor: "pointer" }}
+            onClick={() => setCurrentPage("home")}
+          >
+            MoveUp
+          </Typography>
 
-        <nav>
-          <ul>
-            <li>
-              <button onClick={() => setCurrentPage("home")}>Home</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("leaderboard")}>
-                Leaderboard
-              </button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("account")}>Account</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("signup")}>Sign Up</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("login")}>Login</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("about")}>About</button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("reminder")}>
-                Reminder
-              </button>
-            </li>
-            <li>
-              <button onClick={() => setCurrentPage("dashboard")}>
-                Dashboard
-              </button>
-            </li>
-          </ul>
-        </nav>
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+            <Button onClick={() => setCurrentPage("home")}>Home</Button>
 
-        {isLoggedIn ? (
-          <>
-            <p>Logged in as {user.username}</p>
-            <button type="button" onClick={logout}>
-              Logout
-            </button>
-          </>
-        ) : (
-          <p>Not logged in</p>
-        )}
-      </header>
+            <Button onClick={() => setCurrentPage("leaderboard")}>
+              Leaderboard
+            </Button>
 
-      <main>
+            <Button onClick={() => setCurrentPage("about")}>About</Button>
+
+            <Button onClick={() => setCurrentPage("reminder")}>Reminder</Button>
+
+            {isLoggedIn && (
+              <>
+                <Button onClick={() => setCurrentPage("dashboard")}>
+                  Dashboard
+                </Button>
+
+                <Button onClick={() => setCurrentPage("account")}>
+                  Account
+                </Button>
+
+                <Button color="error" onClick={logout}>
+                  Logout
+                </Button>
+              </>
+            )}
+
+            {!isLoggedIn && (
+              <>
+                <Button onClick={() => setCurrentPage("login")}>Login</Button>
+
+                <Button
+                  variant="contained"
+                  onClick={() => setCurrentPage("signup")}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+
+      <Container component="main" maxWidth="lg" sx={{ py: 4, flex: 1 }}>
         {currentPage === "home" && <Home setCurrentPage={setCurrentPage} />}
         {currentPage === "about" && <About />}
         {currentPage === "reminder" && <Reminder />}
@@ -92,8 +111,22 @@ function App() {
 
         {currentPage === "login" && <Login />}
         {currentPage === "leaderboard" && <Leaderboard />}
-      </main>
-    </div>
+      </Container>
+
+      <Box
+        component="footer"
+        sx={{
+          py: 3,
+          textAlign: "center",
+          backgroundColor: "#ffffff",
+          borderTop: "1px solid #e0e0e0",
+        }}
+      >
+        <Typography variant="body2" color="text.secondary">
+          © 2026 MoveUp. All rights reserved.
+        </Typography>
+      </Box>
+    </Box>
   );
 }
 

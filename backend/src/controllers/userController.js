@@ -5,6 +5,29 @@ const getUserSummary = async (req, res) => {
     const userId = req.params.userId;
     const user = await User.findById(userId).select("username email");
 
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json({
+      user: {
+        username: username,
+        email: email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to retrieve email and username" });
+  }
+};
+
+const getUserStats = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId).select(
+      "totalPoints currentSessionStreak bestSessionStreak bestDailyStreak lastDailyBonusDate"
+    );
+
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
@@ -23,7 +46,7 @@ const getUserSummary = async (req, res) => {
 const getLeaderboard = async (req, res) => {
   try {
     const users = await User.find()
-      .select("username totalPoints currentSessionStreak bestSessionStreak")
+      .select("username totalPoints")
       .sort({ totalPoints: -1 });
 
     return res.status(200).json(users);
@@ -103,4 +126,5 @@ module.exports = {
   getLeaderboard,
   getUserSettings,
   updateUserSettings,
+  getUserStats,
 };
