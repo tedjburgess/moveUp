@@ -16,10 +16,20 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin, like Postman/browser direct visits
+    if (!origin) {
       return callback(null, true);
     }
 
+    // Allow local frontend, exact deployed frontend URL, and Netlify deploy URLs
+    const isAllowed =
+      allowedOrigins.includes(origin) || origin.endsWith(".netlify.app");
+
+    if (isAllowed) {
+      return callback(null, true);
+    }
+
+    console.log("Blocked by CORS:", origin);
     return callback(null, false);
   },
 };
