@@ -30,8 +30,19 @@ const signup = async (req, res) => {
       passwordHash,
     });
 
+    const token = jwt.sign(
+      {
+        userId: user._id,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
     return res.status(201).json({
       message: "User created successfully",
+      token,
       user: {
         id: user._id,
         username: user.username,
@@ -44,6 +55,8 @@ const signup = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
+
     return res.status(500).json({
       error: "Failed to create user",
     });
