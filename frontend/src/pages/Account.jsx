@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import API_BASE_URL from "../config/api.js";
-
-const testUserId = "6a01cca5c9be6b5ff3977ed9";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Account() {
+  const { user: authUser, token } = useAuth();
+
   const [user, setUser] = useState(null);
   const [reminderMode, setReminderMode] = useState("science");
   const [customReminderMinutes, setCustomReminderMinutes] = useState("");
@@ -12,18 +13,17 @@ function Account() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const getCurrentUserId = () => {
-    return localStorage.getItem("userId") || testUserId;
-  };
-
   useEffect(() => {
     const fetchAccount = async () => {
       try {
-        const userId = getCurrentUserId();
+        setIsLoading(true);
+        setErrorMessage("");
 
-        const response = await fetch(
-          `${API_BASE_URL}/api/users/${userId}/summary`
-        );
+        const response = await fetch(`${API_BASE_URL}/api/users/me/settings`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("Failed to load account");
@@ -31,10 +31,9 @@ function Account() {
 
         const data = await response.json();
 
-        setUser(data.user);
-        setReminderMode(data.user.reminderMode || "science");
-        setCustomReminderMinutes(data.user.customReminderMinutes || "");
-        setErrorMessage("");
+        setUser(authUser);
+        setReminderMode(data.reminderMode || "science");
+        setCustomReminderMinutes(data.customReminderMinutes || "");
       } catch (error) {
         setErrorMessage("Could not load account information.");
       } finally {
@@ -42,8 +41,13 @@ function Account() {
       }
     };
 
-    fetchAccount();
-  }, []);
+    if (token && authUser) {
+      fetchAccount();
+    } else {
+      setIsLoading(false);
+      setErrorMessage("You need to be logged in to view this page.");
+    }
+  }, [token, authUser]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,35 +57,30 @@ function Account() {
       setSuccessMessage("");
       setErrorMessage("");
 
-      const userId = getCurrentUserId();
-
-      const response = await fetch(
-        `${API_BASE_URL}/api/users/${userId}/reminder-settings`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            reminderMode,
-            customReminderMinutes:
-              reminderMode === "custom" ? customReminderMinutes : null,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save settings");
-      }
+      const response = await fetch(`${API_BASE_URL}/api/users/me/settings`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reminderMode,
+          customReminderMinutes:
+            reminderMode === "custom" ? Number(customReminderMinutes) : null,
+        }),
+      });
 
       const data = await response.json();
 
-      setUser(data.user);
-      setReminderMode(data.user.reminderMode || "science");
-      setCustomReminderMinutes(data.user.customReminderMinutes || "");
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to save settings");
+      }
+
+      setReminderMode(data.reminderMode || "science");
+      setCustomReminderMinutes(data.customReminderMinutes || "");
       setSuccessMessage("Reminder settings saved.");
     } catch (error) {
-      setErrorMessage("Could not save reminder settings.");
+      setErrorMessage(error.message || "Could not save reminder settings.");
     } finally {
       setIsSaving(false);
     }
@@ -163,6 +162,7 @@ function Account() {
               id="customReminderMinutes"
               type="number"
               min="1"
+              max="15"
               value={customReminderMinutes}
               onChange={(event) => setCustomReminderMinutes(event.target.value)}
             />

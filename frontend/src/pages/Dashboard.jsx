@@ -3,11 +3,14 @@ import MovementTimer from "../components/dashboard/MovementTimer.jsx";
 import ReminderModal from "../components/dashboard/ReminderModal.jsx";
 import ScoreStreakSummary from "../components/dashboard/ScoreStreakSummary.jsx";
 import API_BASE_URL from "../config/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const reminderIntervalSeconds = 10;
-const testUserId = "6a01cca5c9be6b5ff3977eda";
 
 function Dashboard() {
+  const { user, token } = useAuth();
+  const userId = user?.id || user?._id;
+
   const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
@@ -20,9 +23,18 @@ function Dashboard() {
   const [statsError, setStatsError] = useState("");
 
   const fetchMovementLogs = async () => {
+    if (!userId) {
+      return;
+    }
+
     try {
       const response = await fetch(
-        `${API_BASE_URL}/api/movement-logs/user/${testUserId}`
+        `${API_BASE_URL}/api/movement-logs/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (!response.ok) {
@@ -38,12 +50,21 @@ function Dashboard() {
   };
 
   const fetchUserStats = async () => {
+    if (!userId) {
+      return;
+    }
+
     try {
       setStatsLoading(true);
       setStatsError("");
 
       const response = await fetch(
-        `${API_BASE_URL}/api/users/${testUserId}/summary`
+        `${API_BASE_URL}/api/users/${userId}/summary`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (!response.ok) {
@@ -65,8 +86,12 @@ function Dashboard() {
   };
 
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
+
     refreshDashboardData();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     if (!isTimerRunning || secondsLeft <= 0) {

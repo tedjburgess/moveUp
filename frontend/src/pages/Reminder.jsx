@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import API_BASE_URL from "../config/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Reminder({ onClose, onMovementSaved }) {
+  const { user, token } = useAuth();
+  const userId = user?.id || user?._id;
+
   const [isMoving, setIsMoving] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
@@ -15,15 +19,18 @@ function Reminder({ onClose, onMovementSaved }) {
 
   const maxSeconds = 10 * 60;
 
-  const userId = "6a01cca5c9be6b5ff3977ed8";
-
   const fetchMovementLogs = async () => {
     try {
       setLogsLoading(true);
       setLogsError("");
 
       const response = await fetch(
-        `${API_BASE_URL}/api/movement-logs/user/${userId}`
+        `${API_BASE_URL}/api/movement-logs/user/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       if (!response.ok) {
@@ -87,14 +94,20 @@ function Reminder({ onClose, onMovementSaved }) {
   }, [onClose]);
 
   const saveMovementResponse = async (durationSeconds, responseType) => {
+    if (!userId) {
+      setError("No logged-in user found.");
+      return null;
+    }
+
     setMessage("");
     setError("");
 
     try {
-      const response = await fetch("${API_BASE_URL}/api/movement-logs", {
+      const response = await fetch(`${API_BASE_URL}/api/movement-logs`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           userId,

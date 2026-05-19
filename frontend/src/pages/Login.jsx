@@ -9,8 +9,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import API_BASE_URL from "../config/api.js";
+import { useAuth } from "../context/AuthContext.jsx";
 
 function Login() {
+  const { login } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -22,7 +25,7 @@ function Login() {
     setError("");
 
     try {
-      const response = await fetch("${API_BASE_URL}/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +42,10 @@ function Login() {
         throw new Error(data.error || "Login failed");
       }
 
-      localStorage.setItem("token", data.token);
+      login({
+        token: data.token,
+        user: data.user,
+      });
 
       setMessage("Login successful");
     } catch (err) {
