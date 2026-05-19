@@ -28,14 +28,11 @@ function Dashboard() {
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/movement-logs/user/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/movement-logs/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch movement logs");
@@ -59,7 +56,7 @@ function Dashboard() {
       setStatsError("");
 
       const response = await fetch(
-        `${API_BASE_URL}/api/users/${userId}/summary`,
+        `${API_BASE_URL}/api/users/${userId}/stats`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -109,7 +109,9 @@ function App() {
           </ProtectedPage>
         )}
 
-        {currentPage === "login" && <Login />}
+        {currentPage === "login" && (
+          <Login onLoginSuccess={() => setCurrentPage("dashboard")} />
+        )}
         {currentPage === "leaderboard" && <Leaderboard />}
       </Container>
 
