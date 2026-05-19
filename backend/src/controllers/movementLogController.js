@@ -126,8 +126,69 @@ const getMovementLogsByUser = async (req, res) => {
   }
 };
 
+const getMovementLogStats = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Unauthorized: missing user",
+      });
+    }
+
+    const movementLogs = await MovementLog.find({ userId });
+
+    const totalLogs = movementLogs.length;
+
+    const yesCount = movementLogs.filter(
+      (log) => log.responseType === "yes"
+    ).length;
+
+    const noCount = movementLogs.filter(
+      (log) => log.responseType === "no"
+    ).length;
+
+    const timeoutCount = movementLogs.filter(
+      (log) => log.responseType === "timeout"
+    ).length;
+
+    const successfulMovementCount = yesCount;
+
+    const totalDurationSeconds = movementLogs.reduce(
+      (total, log) => total + (log.durationSeconds || 0),
+      0
+    );
+
+    const totalCreditedSeconds = movementLogs.reduce(
+      (total, log) => total + (log.creditedSeconds || 0),
+      0
+    );
+
+    const totalPointsEarned = movementLogs.reduce(
+      (total, log) => total + (log.pointsEarned || 0),
+      0
+    );
+
+    return res.status(200).json({
+      totalLogs,
+      successfulMovementCount,
+      yesCount,
+      noCount,
+      timeoutCount,
+      totalDurationSeconds,
+      totalCreditedSeconds,
+      totalPointsEarned,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to calculate movement log stats",
+    });
+  }
+};
+
 module.exports = {
   createMovementLog,
   getMovementLogsByUser,
+  getMovementLogStats,
   calculateMovementLogValues,
 };
