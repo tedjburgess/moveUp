@@ -23,8 +23,7 @@ const corsOptions = {
 
     // Allow local frontend, exact deployed frontend URL, and Netlify deploy URLs
     const isAllowed =
-      allowedOrigins.includes(origin) ||
-      origin.endsWith(".netlify.app");
+      allowedOrigins.includes(origin) || origin.endsWith(".netlify.app");
 
     if (isAllowed) {
       return callback(null, true);
