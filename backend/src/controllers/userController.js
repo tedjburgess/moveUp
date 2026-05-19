@@ -35,8 +35,11 @@ const getUserStats = async (req, res) => {
 
     return res.status(200).json({
       user: {
-        username: user.username,
-        email: user.email,
+        totalPoints: user.totalPoints,
+        currentSessionStreak: user.currentSessionStreak,
+        bestSessionStreak: user.bestSessionStreak,
+        bestDailyStreak: user.bestDailyStreak,
+        lastDailyBonusDate: user.lastDailyBonusDate,
       },
     });
   } catch (error) {

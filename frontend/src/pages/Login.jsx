@@ -11,7 +11,7 @@ import { useState } from "react";
 import API_BASE_URL from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
-function Login() {
+function Login({ onLoginSuccess }) {
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -20,7 +20,9 @@ function Login() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
     setMessage("");
     setError("");
 
@@ -48,6 +50,10 @@ function Login() {
       });
 
       setMessage("Login successful");
+
+      if (onLoginSuccess) {
+        onLoginSuccess();
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -75,7 +81,11 @@ function Login() {
             Log in to continue tracking your movement habits.
           </Typography>
 
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          <Box
+            component="form"
+            onSubmit={handleLogin}
+            sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          >
             <TextField
               label="Email"
               type="email"
@@ -92,7 +102,7 @@ function Login() {
               fullWidth
             />
 
-            <Button variant="contained" size="large" onClick={handleLogin}>
+            <Button type="submit" variant="contained" size="large">
               Login
             </Button>
 

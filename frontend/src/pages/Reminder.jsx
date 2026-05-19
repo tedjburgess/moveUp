@@ -24,14 +24,11 @@ function Reminder({ onClose, onMovementSaved }) {
       setLogsLoading(true);
       setLogsError("");
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/movement-logs/user/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/movement-logs/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch movement logs");
@@ -110,8 +107,7 @@ function Reminder({ onClose, onMovementSaved }) {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          userId,
-          moved: responseType === "yes",
+          responseType,
           durationSeconds,
         }),
       });
