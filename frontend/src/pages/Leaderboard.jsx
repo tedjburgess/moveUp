@@ -77,14 +77,14 @@ function Leaderboard() {
                     px: 2,
                   }}
                 >
-                <ListItemText
-                  primary={
-                    <Typography component="span" fontWeight="bold">
-                      #{index + 1} {user.username}
-                    </Typography>
-                  }
-                  secondary={`${user.totalPoints} points`}
-                />
+                  <ListItemText
+                    primary={
+                      <Typography component="span" fontWeight="bold">
+                        #{index + 1} {user.username}
+                      </Typography>
+                    }
+                    secondary={`${user.totalPoints} points`}
+                  />
                 </ListItem>
               ))}
             </List>
