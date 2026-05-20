@@ -25,6 +25,6 @@ router.patch("/me/settings", requireAuth, updateUserSettings);
 router.get("/leaderboard", getLeaderboard);
 router.delete("/:userId", requireAuth, deleteUserAccount);
 router.get("/:userId/summary", getUserSummary);
-router.get("/:userId/stats", getUserStats);
+router.get("/me/stats", requireAuth, getUserStats);
 
 module.exports = router;
