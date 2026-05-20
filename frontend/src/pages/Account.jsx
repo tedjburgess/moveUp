@@ -212,7 +212,7 @@ function Account() {
               id="customReminderMinutes"
               type="number"
               min="1"
-              max="15"
+              max="60"
               value={customReminderMinutes}
               onChange={(event) => setCustomReminderMinutes(event.target.value)}
             />
