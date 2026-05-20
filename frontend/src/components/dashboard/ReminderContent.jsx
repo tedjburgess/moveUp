@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import API_BASE_URL from "../config/api.js";
-import { useAuth } from "../context/AuthContext.jsx";
+import API_BASE_URL from "../../config/api.js";
+import { useAuth } from "../../context/AuthContext.jsx";
 
-function Reminder({ onClose, onMovementSaved }) {
+function ReminderContent({ onClose, onMovementSaved }) {
   const { user, token } = useAuth();
   const userId = user?.id || user?._id;
 
@@ -10,42 +10,10 @@ function Reminder({ onClose, onMovementSaved }) {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [finalDuration, setFinalDuration] = useState(null);
 
-  const [movementLogs, setMovementLogs] = useState([]);
-  const [logsLoading, setLogsLoading] = useState(true);
-  const [logsError, setLogsError] = useState("");
-
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const maxSeconds = 10 * 60;
-
-  const fetchMovementLogs = async () => {
-    try {
-      setLogsLoading(true);
-      setLogsError("");
-
-      const response = await fetch(`${API_BASE_URL}/api/movement-logs/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch movement logs");
-      }
-
-      const data = await response.json();
-      setMovementLogs(data);
-    } catch (error) {
-      setLogsError(error.message);
-    } finally {
-      setLogsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchMovementLogs();
-  }, []);
 
   useEffect(() => {
     if (!isMoving) {
@@ -75,8 +43,6 @@ function Reminder({ onClose, onMovementSaved }) {
     const timeout = setTimeout(
       async () => {
         await saveMovementResponse(0, "timeout");
-
-        await fetchMovementLogs();
 
         if (onMovementSaved) {
           onMovementSaved();
@@ -142,7 +108,6 @@ function Reminder({ onClose, onMovementSaved }) {
     setFinalDuration(0);
 
     await saveMovementResponse(0, "no");
-    await fetchMovementLogs();
 
     if (onClose) {
       onClose();
@@ -154,7 +119,6 @@ function Reminder({ onClose, onMovementSaved }) {
     setFinalDuration(elapsedSeconds);
 
     await saveMovementResponse(elapsedSeconds, "yes");
-    fetchMovementLogs();
   };
 
   const formatTime = (seconds) => {
@@ -206,33 +170,6 @@ function Reminder({ onClose, onMovementSaved }) {
         <p>Final duration: {formatTime(finalDuration)}</p>
       )}
 
-      <hr />
-
-      <h3>Recent Movement Logs</h3>
-      <button onClick={fetchMovementLogs}>Refresh logs</button>
-
-      {logsLoading && <p>Loading movement logs...</p>}
-
-      {logsError && <p>{logsError}</p>}
-
-      {!logsLoading && !logsError && movementLogs.length === 0 && (
-        <p>No movement logs found.</p>
-      )}
-
-      {!logsLoading && !logsError && movementLogs.length > 0 && (
-        <ul>
-          {movementLogs.map((log) => (
-            <li key={log._id}>
-              <strong>Moved:</strong> {log.moved ? "Yes" : "No"} |{" "}
-              <strong>Duration:</strong> {formatTime(log.durationSeconds)} |{" "}
-              <strong>Points:</strong> {log.pointsEarned} |{" "}
-              <strong>Created:</strong>{" "}
-              {new Date(log.createdAt).toLocaleString()}
-            </li>
-          ))}
-        </ul>
-      )}
-
       {message && <p>{message}</p>}
 
       {error && <p>{error}</p>}
@@ -240,4 +177,4 @@ function Reminder({ onClose, onMovementSaved }) {
   );
 }
 
-export default Reminder;
+export default ReminderContent;

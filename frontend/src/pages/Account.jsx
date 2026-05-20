@@ -12,11 +12,16 @@ function Account() {
   const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [movementLogs, setMovementLogs] = useState([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [logsError, setLogsError] = useState("");
 
   useEffect(() => {
     const fetchAccount = async () => {
       try {
         setIsLoading(true);
+        setLogsLoading(true);
+        setLogsError("");
         setErrorMessage("");
 
         const response = await fetch(`${API_BASE_URL}/api/users/me/settings`, {
@@ -34,10 +39,27 @@ function Account() {
         setUser(authUser);
         setReminderMode(data.reminderMode || "science");
         setCustomReminderMinutes(data.customReminderMinutes || "");
+        const logsResponse = await fetch(
+          `${API_BASE_URL}/api/movement-logs/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!logsResponse.ok) {
+          throw new Error("Failed to load movement logs");
+        }
+
+        const logsData = await logsResponse.json();
+        setMovementLogs(logsData.slice(0, 3));
       } catch (error) {
         setErrorMessage("Could not load account information.");
+        setLogsError("Could not load recent movement logs.");
       } finally {
         setIsLoading(false);
+        setLogsLoading(false);
       }
     };
 
@@ -48,6 +70,12 @@ function Account() {
       setErrorMessage("You need to be logged in to view this page.");
     }
   }, [token, authUser]);
+
+  const formatTime = (seconds = 0) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -122,6 +150,28 @@ function Account() {
         <p>Total points: {user.totalPoints ?? 0}</p>
         <p>Current session streak: {user.currentSessionStreak ?? 0}</p>
         <p>Best session streak: {user.bestSessionStreak ?? 0}</p>
+        <h3>Recent Movement Logs</h3>
+
+        {logsLoading && <p>Loading recent movement logs...</p>}
+
+        {logsError && <p>{logsError}</p>}
+
+        {!logsLoading && !logsError && movementLogs.length === 0 && (
+          <p>No recent movement logs found.</p>
+        )}
+
+        {!logsLoading && !logsError && movementLogs.length > 0 && (
+          <ul>
+            {movementLogs.map((log) => (
+              <li key={log._id}>
+                Response: {log.responseType || (log.moved ? "yes" : "no")} |
+                Duration: {formatTime(log.durationSeconds)} | Points:{" "}
+                {log.pointsEarned} | Created:{" "}
+                {new Date(log.createdAt).toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <form onSubmit={handleSubmit}>
