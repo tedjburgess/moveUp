@@ -7,7 +7,7 @@ Users can receive reminders to take short movement breaks, confirm completed bre
 ## Deployed App
 
 - Frontend: https://cute-crisp-d4f482.netlify.app/
-- Backend API: Not added yet
+- Backend API: https://moveup-backend-p0zx.onrender.com/
 - Backend health route: Not added yet
 
 The backend deployment link will be added once the deployed API URL is confirmed.
