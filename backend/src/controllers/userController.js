@@ -125,10 +125,39 @@ const updateUserSettings = async (req, res) => {
   }
 };
 
+const deleteUserAccount = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    if (req.userId !== userId) {
+      return res.status(403).json({
+        error: "You can only delete your own account",
+      });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "User account deleted",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to delete user account",
+    });
+  }
+};
+
 module.exports = {
   getUserSummary,
   getLeaderboard,
   getUserSettings,
   updateUserSettings,
   getUserStats,
+  deleteUserAccount,
 };

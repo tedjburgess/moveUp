@@ -7,6 +7,7 @@ const {
   getUserSettings,
   updateUserSettings,
   getUserStats,
+  deleteUserAccount,
 } = require("../controllers/userController");
 
 const requireAuth = require("../middleware/authMiddleware");
@@ -22,6 +23,7 @@ router.get("/me/settings", requireAuth, getUserSettings);
 router.patch("/me/settings", requireAuth, updateUserSettings);
 
 router.get("/leaderboard", getLeaderboard);
+router.delete("/:userId", requireAuth, deleteUserAccount);
 router.get("/:userId/summary", getUserSummary);
 router.get("/:userId/stats", getUserStats);
 
