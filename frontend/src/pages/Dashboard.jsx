@@ -5,13 +5,18 @@ import ScoreStreakSummary from "../components/dashboard/ScoreStreakSummary.jsx";
 import API_BASE_URL from "../config/api.js";
 import { useAuth } from "../context/AuthContext.jsx";
 
-const reminderIntervalSeconds = 10;
+const defaultReminderIntervalSeconds = 10;
 
 function Dashboard() {
   const { user, token } = useAuth();
   const userId = user?.id || user?._id;
 
-  const [secondsLeft, setSecondsLeft] = useState(reminderIntervalSeconds);
+  const [reminderIntervalSeconds, setReminderIntervalSeconds] = useState(
+    defaultReminderIntervalSeconds
+  );
+  const [secondsLeft, setSecondsLeft] = useState(
+    defaultReminderIntervalSeconds
+  );
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
 
@@ -21,6 +26,39 @@ function Dashboard() {
   const [userStats, setUserStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState("");
+
+  const fetchReminderSettings = async () => {
+    if (!token) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/me/settings`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch reminder settings");
+      }
+
+      const data = await response.json();
+
+      if (data.reminderMode === "custom" && data.customReminderMinutes) {
+        const customSeconds = Number(data.customReminderMinutes) * 60;
+        setReminderIntervalSeconds(customSeconds);
+        setSecondsLeft(customSeconds);
+        return;
+      }
+
+      setReminderIntervalSeconds(defaultReminderIntervalSeconds);
+      setSecondsLeft(defaultReminderIntervalSeconds);
+    } catch (error) {
+      setReminderIntervalSeconds(defaultReminderIntervalSeconds);
+      setSecondsLeft(defaultReminderIntervalSeconds);
+    }
+  };
 
   const fetchMovementLogs = async () => {
     if (!userId) {
@@ -55,14 +93,11 @@ function Dashboard() {
       setStatsLoading(true);
       setStatsError("");
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/users/${userId}/stats`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/users/me/stats`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch user stats");
@@ -78,17 +113,18 @@ function Dashboard() {
   };
 
   const refreshDashboardData = async () => {
+    await fetchReminderSettings();
     await fetchUserStats();
     await fetchMovementLogs();
   };
 
   useEffect(() => {
-    if (!userId) {
+    if (!userId || !token) {
       return;
     }
 
     refreshDashboardData();
-  }, [userId]);
+  }, [userId, token]);
 
   useEffect(() => {
     if (!isTimerRunning || secondsLeft <= 0) {

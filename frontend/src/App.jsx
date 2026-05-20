@@ -70,10 +70,10 @@ function App() {
             direction="row"
             spacing={{ xs: 0.5, sm: 1 }}
             useFlexGap
-            flexWrap="wrap"
-            justifyContent={{ xs: "center", md: "flex-end" }}
             sx={{
               width: { xs: "100%", md: "auto" },
+              flexWrap: "wrap",
+              justifyContent: { xs: "center", md: "flex-end" },
               rowGap: 1,
             }}
           >
