@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import Home from "./pages/Home.jsx";
 import About from "./pages/About.jsx";
-import Reminder from "./pages/Reminder.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
@@ -51,8 +50,6 @@ function App() {
 
             <Button onClick={() => setCurrentPage("about")}>About</Button>
 
-            <Button onClick={() => setCurrentPage("reminder")}>Reminder</Button>
-
             {isLoggedIn && (
               <>
                 <Button onClick={() => setCurrentPage("dashboard")}>
@@ -88,7 +85,6 @@ function App() {
       <Container component="main" maxWidth="lg" sx={{ py: 4, flex: 1 }}>
         {currentPage === "home" && <Home setCurrentPage={setCurrentPage} />}
         {currentPage === "about" && <About />}
-        {currentPage === "reminder" && <Reminder />}
         {currentPage === "signup" && <SignUp />}
 
         {currentPage === "dashboard" && (

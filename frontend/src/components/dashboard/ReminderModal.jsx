@@ -1,4 +1,4 @@
-import Reminder from "../../pages/Reminder.jsx";
+import ReminderContent from "./ReminderContent.jsx";
 
 function ReminderModal({ onClose, onMovementSaved }) {
   return (
@@ -21,7 +21,7 @@ function ReminderModal({ onClose, onMovementSaved }) {
           textAlign: "center",
         }}
       >
-        <Reminder onClose={onClose} onMovementSaved={onMovementSaved} />
+        <ReminderContent onClose={onClose} onMovementSaved={onMovementSaved} />
       </div>
     </div>
   );
