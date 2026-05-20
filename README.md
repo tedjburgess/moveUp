@@ -2,13 +2,22 @@
 
 MoveUp is a fullstack Movement Reminder / Activity Streak web application. The app helps users build healthier habits while spending long periods of time at a computer.
 
-Users can receive reminders to take short movement breaks, confirm completed breaks, earn points, build streaks, and compare their progress on a leaderboard.
+Users can receive reminders to take short movement breaks, confirm completed breaks, earn points, build streaks, and compare progress on a leaderboard.
+
+## Deployed App
+
+- Frontend: https://cute-crisp-d4f482.netlify.app/
+- Backend API: https://moveup-backend-p0zx.onrender.com/
+- Backend health route: Not added yet
+
+The backend deployment link will be added once the deployed API URL is confirmed.
 
 ## Tech Stack
 
 ### Frontend
 
 - React
+- Vite
 - JavaScript
 - CSS
 
@@ -16,186 +25,161 @@ Users can receive reminders to take short movement breaks, confirm completed bre
 
 - Node.js
 - Express
-- MongoDB
+- MongoDB Atlas
 - Mongoose
+- JWT authentication
 
-## Project structure
+## Project Structure
 
-```txt
+````txt
 frontend/
   src/
-    components/   Reusable React components
-    pages/        Page-level React views
+    components/     Reusable React components
+    pages/          Page-level React views
+    context/        Auth context
+    config/         Frontend API config
 
 backend/
   src/
-    app.js        Express app setup
-    server.js     Starts the backend server
-    config/       Database and app configuration
-    controllers/  Request handling logic
-    routes/       API route definitions
-    models/       Mongoose schemas and models
-    middleware/   Express middleware
-```
+    app.js          Express app setup
+    server.js       Starts the backend server
+    config/         Database configuration
+    controllers/    Request handling logic
+    routes/         API route definitions
+    models/         Mongoose schemas and models
+    middleware/     Express middleware such as auth
+Core Features
+User signup and login
+Protected dashboard for logged-in users
+Guest timer mode
+Movement reminder modal
+Yes / No / timeout movement responses
+Stopwatch for completed movement breaks
+Points and session streaks
+Leaderboard based on real user scores
+Account page with user information and reminder settings
+MongoDB Atlas database storage
+Data Flow
 
-## Group Members
+The user interacts with the React frontend. The frontend sends HTTP requests to the Express backend API. The backend validates requests, runs controller logic, and reads or writes data using Mongoose models. MongoDB Atlas stores users, movement logs, points, streaks, and reminder settings.
 
-- Osayi Uwadiae
-- Ted J. Burgess
-- Mhd Osama Alsaheb
-- Ralph Tolentino Ariza
+Example flow:
 
-## Current Checkpoint
+React frontend → Express route → Controller → Mongoose model → MongoDB Atlas
+Movement Reminder Flow
 
-The current checkpoint focuses on building the frontend reminder flow, connecting the frontend to the backend API, saving movement responses to MongoDB, and documenting how to run the project locally.
+The dashboard contains the main movement reminder flow.
 
-## Planned Core Features
+The user starts the reminder timer.
+When the timer finishes, a reminder modal opens.
+If the user clicks Yes, the stopwatch starts.
+When the user clicks I'm back, the duration is saved.
+If the user clicks No, a no-movement response is saved.
+If the user does not answer in time, a timeout response is saved.
+The backend updates movement logs, points, and streaks.
 
-- User registration and login
-- Movement break reminders with stopwatch tracking
-- Break confirmation with Yes/No response flow
-- Points system
-- Activity streaks
-- User statistics
-- Leaderboard
-- Responsive design
+Movement duration is capped at 600 credited seconds for points.
 
-## Data Flow
+Local Setup
 
-The user interacts with the frontend built in React. The frontend sends requests to the backend API using HTTP requests. The backend, built with Node.js and Express, handles the logic for users, reminders, points, streaks, and leaderboard data. The backend communicates with MongoDB through Mongoose to store and retrieve data.
+Clone the repository:
 
-## Movement Reminder Flow
+git clone https://github.com/tedjburgess/moveUp.git
+cd moveUp
 
-The Reminder page simulates a movement break prompt.
+Install dependencies:
 
-- Clicking **Yes** starts a stopwatch.
-- Clicking **I'm back** stops the stopwatch and saves the movement duration.
-- Clicking **No** saves a movement response with 0 seconds.
-- Movement duration is capped at 10 minutes.
-- Responses are sent to the backend API and stored in MongoDB.
-
-## Frontend & Backend Setup Instructions
-
-The root script is configured using concurrently, allowing both frontend and backend to run together.
-
-Run the application from the root folder:
-
-```bash
 npm install
-npm run dev
-```
-
-Frontend:
-
-```text
-http://localhost:5173
-```
-
-Backend:
-
-```text
-http://localhost:5000
-```
-
-## Environment Variables
-
-Create a `.env` file inside the `backend` folder.
-
-Example:
-
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-```
-
-## Checkpoint 3 Flow
-
-The Dashboard contains a movement timer that reminds the user to take a break. When the timer reaches zero, a reminder modal opens and asks the user to confirm whether they moved.
-
-If the user clicks **Yes**, the app tracks the movement duration and sends the response to the backend. The backend caps the credited movement time at 600 seconds, calculates points as 1 point per full credited minute, saves the movement log, and updates the user's total points and session streak.
-
-If the user clicks **No**, the app saves a movement response with 0 seconds and 0 points, and the current session streak is reset. Timeout or missed movement responses should also be treated as no movement for the current checkpoint flow.
-
-Recent movement activity can be fetched from the backend so the dashboard can show the latest movement responses, including response type, duration, and points earned.
-
-The leaderboard is based on user data, not a separate leaderboard model. Users are ranked by `totalPoints`, with usernames and current streak data shown where available.
-
-## Local Testing for Checkpoint 3
-
-Start the app from the project root:
-
-```bash
+cd frontend
 npm install
-npm run dev
+cd ../backend
+npm install
+cd ..
 
-Frontend:
+Create a backend environment file:
 
-http://localhost:5173
+touch backend/.env
 
-Backend:
-
-http://localhost:5000
-
-Create a local backend .env file:
+Add local environment variables to backend/.env:
 
 PORT=5000
-MONGO_URI=your_mongodb_connection_string_here
+MONGO_URI=your_mongodb_atlas_connection_string
+JWT_SECRET=your_local_jwt_secret
+CLIENT_URL=http://localhost:5173
+FRONTEND_URL=http://localhost:5173
 
-Do not commit the real .env file.
+Do not commit real secrets, passwords, JWT secrets, or MongoDB connection strings.
 
-Useful backend checks:
+Start the project from the root folder:
+
+npm run dev
+
+Local URLs:
+
+Frontend: http://localhost:5173
+Backend:  http://localhost:5000
+Useful Local API Checks
+
+Health check:
 
 curl http://localhost:5000/api/health
 
-Fetch recent movement logs for a user:
+Login:
 
-curl http://localhost:5000/api/movement-logs/user/USER_ID_HERE
+curl -X POST http://localhost:5000/api/auth/login -H "Content-Type: application/json" -d "{\"email\":\"user@example.com\",\"password\":\"password123\"}"
 
-Create a movement log:
+Leaderboard:
 
-curl -X POST http://localhost:5000/api/movement-logs -H "Content-Type: application/json" -d "{\"userId\":\"USER_ID_HERE\",\"moved\":true,\"durationSeconds\":120}"
+curl http://localhost:5000/api/users/leaderboard
+Environment Variables
 
-Expected result: the saved movement log includes durationSeconds, creditedSeconds, and pointsEarned.
-```
+Required backend environment variables:
 
-## Checkpoint 4 Technical Decisions
+Variable	Purpose
+PORT	Local backend port
+MONGO_URI	MongoDB Atlas connection string
+JWT_SECRET	Secret used to sign JWT tokens
+CLIENT_URL	Allowed local/deployed frontend URL for CORS
+FRONTEND_URL	Allowed local/deployed frontend URL for CORS
 
-During Checkpoint 4, the project started adding authentication and account-related features. The goal is to move from hardcoded test users toward a logged-in user flow, while still keeping the app simple enough for the current checkpoint.
+Required frontend environment variables:
 
-### Database and Mongoose
+Variable	Purpose
+VITE_API_BASE_URL	Backend API base URL for deployed frontend, if needed
+Database
 
-MongoDB is used because the project needs to store users, movement logs, reminder settings, points, and streak data. Mongoose is used on the backend to define schemas for this data and to make database access easier to organize in the Express controllers.
+MoveUp uses MongoDB Atlas as the cloud database and Mongoose for schema modeling.
 
-### Authentication Approach
+Main collections include:
 
-The project is moving toward JWT-based authentication. JWTs allow the backend to identify the logged-in user when protected routes are called. This is useful for account pages, reminder settings, movement logs, and future features where users should only access their own data.
+users
+movementlogs
+additional app data as needed for reminder/account features
 
-Some frontend pages may still use a temporary test user while the full login flow is being connected. This is treated as guest/test mode. Logged-in mode should use the authenticated user's ID from the backend instead of trusting a user ID sent manually from the frontend.
+Movement logs are connected to users so the app can calculate points, streaks, leaderboard rankings, and statistics.
 
-### Backend Folder Structure
+Group Members
+Osayi Uwadiae
+Ted J. Burgess
+Mhd Osama Alsaheb
+Ralph Tolentino Ariza
+Deployment Notes
 
-The backend is split into separate folders to keep the code easier to maintain:
+The frontend is deployed on Netlify.
 
-- `models/` defines MongoDB/Mongoose schemas.
-- `routes/` defines the API endpoints.
-- `controllers/` contains request and response logic.
-- `middleware/` contains reusable Express middleware, such as authentication checks.
-- `config/` contains setup code such as database connection logic.
+The deployed frontend should use a backend API URL from environment configuration, not hardcoded localhost.
 
-This structure keeps route files small and puts most business logic in controllers.
+The backend deployment URL still needs to be added once confirmed by the team.
 
-### Leaderboard Decision
 
-The leaderboard is calculated from existing user data instead of being stored in a separate leaderboard collection. Users are ranked by `totalPoints`, and the response can include fields such as `username`, `currentSessionStreak`, and `bestSessionStreak`.
+---
 
-This avoids duplicate data and keeps the leaderboard in sync with the user records.
+# 3. Test quickly
 
-### Account and Reminder Settings
+This is docs-only, so no need to run the whole app unless you want.
 
-The Account page is intended to show basic user information such as username, email, total points, and current streak. It is also where reminder settings belong.
+Run:
 
-Reminder settings include a science-informed default mode and a custom interval mode. The wording avoids strong medical claims and keeps the feature focused on helpful movement reminders.
-
-### Alternatives Considered
-
-A separate leaderboard model was considered, but it would create duplicate data that could become outdated. Storing reminder settings in a separate settings model was also considered, but for this stage it is simpler to keep basic reminder preferences on the user document.
+```bash
+git diff README.md
+````
