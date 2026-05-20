@@ -24,7 +24,11 @@ const getUserSummary = async (req, res) => {
 
 const getUserStats = async (req, res) => {
   try {
-    const userId = req.params.userId;
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized: missing user" });
+    }
     const user = await User.findById(userId).select(
       "totalPoints currentSessionStreak bestSessionStreak bestDailyStreak lastDailyBonusDate"
     );
