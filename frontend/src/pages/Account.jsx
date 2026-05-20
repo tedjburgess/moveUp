@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 function Account() {
   const { user: authUser, token } = useAuth();
+  const userId = authUser?.id || authUser?._id;
 
   const [user, setUser] = useState(null);
   const [reminderMode, setReminderMode] = useState("science");
@@ -36,7 +37,25 @@ function Account() {
 
         const data = await response.json();
 
-        setUser(authUser);
+        const statsResponse = await fetch(
+          `${API_BASE_URL}/api/users/me/stats`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!statsResponse.ok) {
+          throw new Error("Failed to load user stats");
+        }
+
+        const statsData = await statsResponse.json();
+
+        setUser({
+          ...authUser,
+          ...(statsData.user || {}),
+        });
         setReminderMode(data.reminderMode || "science");
         setCustomReminderMinutes(data.customReminderMinutes || "");
         const logsResponse = await fetch(
@@ -63,13 +82,13 @@ function Account() {
       }
     };
 
-    if (token && authUser) {
+    if (token && authUser && userId) {
       fetchAccount();
     } else {
       setIsLoading(false);
       setErrorMessage("You need to be logged in to view this page.");
     }
-  }, [token, authUser]);
+  }, [token, authUser, userId]);
 
   const formatTime = (seconds = 0) => {
     const minutes = Math.floor(seconds / 60);
@@ -212,7 +231,7 @@ function Account() {
               id="customReminderMinutes"
               type="number"
               min="1"
-              max="15"
+              max="60"
               value={customReminderMinutes}
               onChange={(event) => setCustomReminderMinutes(event.target.value)}
             />
