@@ -5,6 +5,7 @@ const healthRoutes = require("./routes/healthRoutes");
 const movementLogRoutes = require("./routes/movementLogRoutes");
 const userRoutes = require("./routes/userRoutes");
 const authRoutes = require("./routes/authRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/health", healthRoutes);
 app.use("/api/movement-logs", movementLogRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.json({ message: "moveUp backend is running" });
