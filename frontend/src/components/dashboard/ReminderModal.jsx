@@ -1,6 +1,17 @@
+import { useEffect } from "react";
 import ReminderContent from "./ReminderContent.jsx";
+import reminderSound from "../../assets/reminder-sound.mp3";
 
 function ReminderModal({ onClose, onMovementSaved }) {
+  useEffect(() => {
+    const audio = new Audio(reminderSound);
+    audio.volume = 0.8;
+
+    audio.play().catch(() => {
+      // Some browsers block autoplay, so we do not crash if sound is blocked.
+    });
+  }, []);
+
   return (
     <div
       style={{
@@ -10,6 +21,7 @@ function ReminderModal({ onClose, onMovementSaved }) {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        zIndex: 1000,
       }}
     >
       <div
